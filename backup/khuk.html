@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mountain Racer Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Orbitron:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c2461 0%, #1e3799 50%, #4a69bd 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        #game-container {
+            position: relative;
+            width: 1000px;
+            height: 600px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            border: 5px solid #f6b93b;
+        }
+        
+        #mountain-road {
+            position: absolute;
+            width: 400%;
+            height: 100%;
+            background: linear-gradient(to bottom, #2c3e50 0%, #34495e 30%, #2c3e50 100%);
+            background-image: 
+                radial-gradient(circle at 20% 80%, #7f8c8d 2px, transparent 3px),
+                radial-gradient(circle at 40% 60%, #95a5a6 1px, transparent 2px),
+                radial-gradient(circle at 60% 40%, #bdc3c7 1px, transparent 2px),
+                radial-gradient(circle at 80% 20%, #ecf0f1 1px, transparent 2px);
+            background-size: 200px 200px, 150px 150px, 100px 100px, 50px 50px;
+            animation: mountainMove 40s linear infinite;
+            z-index: 1;
+        }
+        
+        @keyframes mountainMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        .road-path {
+            position: absolute;
+            width: 400%;
+            height: 120px;
+            background: #2d3436;
+            bottom: 0;
+            border-top: 10px solid #636e72;
+            border-bottom: 10px solid #636e72;
+            z-index: 2;
+        }
+        
+        .road-line {
+            position: absolute;
+            width: 400%;
+            height: 10px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 40px,
+                #fdcb6e 40px,
+                #fdcb6e 80px
+            );
+            bottom: 60px;
+            animation: roadLineMove 2s linear infinite;
+            z-index: 3;
+        }
+        
+        @keyframes roadLineMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-80px); }
+        }
+        
+        #player-car {
+            position: absolute;
+            bottom: 80px;
+            left: 450px;
+            width: 100px;
+            height: 50px;
+            transform-origin: center bottom;
+            transition: transform 0.3s ease;
+            z-index: 10;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+        }
+        
+        .car-body {
+            width: 100px;
+            height: 40px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border-radius: 10px 10px 5px 5px;
+            position: relative;
+        }
+        
+        .car-top {
+            width: 70px;
+            height: 25px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border-radius: 8px 8px 0 0;
+            position: absolute;
+            top: -15px;
+            left: 15px;
+        }
+        
+        .car-window {
+            width: 60px;
+            height: 18px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            border-radius: 5px;
+            position: absolute;
+            top: -12px;
+            left: 20px;
+        }
+        
+        .car-light {
+            width: 15px;
+            height: 8px;
+            background: #f1c40f;
+            border-radius: 3px;
+            position: absolute;
+        }
+        
+        .light-front {
+            top: 15px;
+            right: 5px;
+            box-shadow: 0 0 10px #f1c40f;
+        }
+        
+        .light-back {
+            top: 15px;
+            left: 5px;
+            background: #e74c3c;
+            box-shadow: 0 0 10px #e74c3c;
+        }
+        
+        .wheel {
+            width: 18px;
+            height: 18px;
+            background: #2c3e50;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -5px;
+            border: 3px solid #111;
+        }
+        
+        .wheel-front {
+            right: 10px;
+            animation: wheelRotate 0.5s linear infinite;
+        }
+        
+        .wheel-back {
+            left: 10px;
+            animation: wheelRotate 0.5s linear infinite;
+        }
+        
+        @keyframes wheelRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50px;
+            filter: blur(2px);
+            animation: cloudFloat linear infinite;
+        }
+        
+        @keyframes cloudFloat {
+            to { transform: translateX(-1200px); }
+        }
+        
+        .obstacle {
+            position: absolute;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            z-index: 5;
+        }
+        
+        .checkpoint {
+            position: absolute;
+            width: 100px;
+            height: 50px;
+            background: rgba(46, 204, 113, 0.3);
+            border: 3px dashed #2ecc71;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+            z-index: 4;
+        }
+        
+        .tree {
+            position: absolute;
+            z-index: 2;
+        }
+        
+        .tree-trunk {
+            width: 10px;
+            height: 40px;
+            background: #8B4513;
+            position: absolute;
+            bottom: 0;
+        }
+        
+        .tree-leaves {
+            width: 40px;
+            height: 40px;
+            background: #27ae60;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 30px;
+            left: -15px;
+        }
+        
+        #ui-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 250px;
+            border: 2px solid #f6b93b;
+            z-index: 100;
+        }
+        
+        .player-info {
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .player-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f6b93b;
+            margin-bottom: 5px;
+        }
+        
+        .health-bar-container {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .health-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f1c40f, #2ecc71);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .score-display {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00cec9;
+            text-align: center;
+            margin-top: 10px;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        #math-question {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            border: 3px solid #00cec9;
+            z-index: 1000;
+            display: none;
+            min-width: 400px;
+            box-shadow: 0 0 50px rgba(0, 206, 201, 0.5);
+        }
+        
+        .question-text {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .answer-option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00cec9;
+            border-radius: 10px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .answer-option:hover {
+            background: rgba(0, 206, 201, 0.3);
+            transform: scale(1.05);
+        }
+        
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            border: 5px solid #e74c3c;
+            z-index: 1000;
+            display: none;
+            text-align: center;
+            min-width: 400px;
+        }
+        
+        .explosion {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, #ff9f43 0%, #e74c3c 50%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 20;
+        }
+        
+        .hammer {
+            position: absolute;
+            width: 80px;
+            height: 150px;
+            background: #7f8c8d;
+            z-index: 20;
+            transform-origin: top center;
+            display: none;
+        }
+        
+        .hammer-head {
+            width: 40px;
+            height: 40px;
+            background: #2c3e50;
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            border-radius: 5px;
+        }
+        
+        .tilt-indicator {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 100;
+            border: 2px solid #f6b93b;
+        }
+        
+        .control-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            z-index: 100;
+            border: 2px solid #f6b93b;
+        }
+        
+        .control-key {
+            display: inline-block;
+            background: #2c3e50;
+            padding: 5px 15px;
+            margin: 0 5px;
+            border-radius: 5px;
+            border: 2px solid #f6b93b;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Background Pegunungan -->
+        <div id="mountain-road"></div>
+        
+        <!-- Jalan Pegunungan -->
+        <div class="road-path"></div>
+        <div class="road-line"></div>
+        
+        <!-- Awan -->
+        <div id="clouds-container"></div>
+        
+        <!-- Pohon -->
+        <div id="trees-container"></div>
+        
+        <!-- Checkpoints -->
+        <div id="checkpoints-container"></div>
+        
+        <!-- Rintangan -->
+        <div id="obstacles-container"></div>
+        
+        <!-- Mobil Pemain -->
+        <div id="player-car">
+            <div class="car-body">
+                <div class="car-top"></div>
+                <div class="car-window"></div>
+                <div class="car-light light-front"></div>
+                <div class="car-light light-back"></div>
+                <div class="wheel wheel-front"></div>
+                <div class="wheel wheel-back"></div>
+            </div>
+        </div>
+        
+        <!-- Efek Ledakan -->
+        <div id="explosion" class="explosion"></div>
+        
+        <!-- Palu -->
+        <div id="hammer" class="hammer">
+            <div class="hammer-head"></div>
+        </div>
+        
+        <!-- UI Overlay -->
+        <div id="ui-overlay">
+            <div class="player-info">
+                <div class="player-name">MOUNTAIN RACER</div>
+                <div style="color: #b2bec3; margin-bottom: 10px;">Health:</div>
+                <div class="health-bar-container">
+                    <div id="health-bar" class="health-bar" style="width: 100%"></div>
+                </div>
+                <div id="health-text" style="color: #00cec9; text-align: center; font-weight: bold;">100%</div>
+            </div>
+            <div class="score-display">
+                SCORE: <span id="score">0</span>
+            </div>
+            <div style="color: #b2bec3; text-align: center; margin-top: 10px; font-size: 14px;">
+                Checkpoint: <span id="checkpoint-counter">0/7</span>
+            </div>
+        </div>
+        
+        <!-- Indikator Kemiringan -->
+        <div id="tilt-indicator" class="tilt-indicator">
+            TILT: <span id="tilt-value">0°</span>
+        </div>
+        
+        <!-- Petunjuk Kontrol -->
+        <div class="control-hint">
+            <div style="margin-bottom: 10px; color: #f6b93b;">CONTROLS:</div>
+            <div>
+                <span class="control-key">D</span> = ACCELERATE<br>
+                <span class="control-key">A</span> = BRAKE/REVERSE
+            </div>
+        </div>
+        
+        <!-- Soal Matematika -->
+        <div id="math-question">
+            <div class="question-text" id="question-text">What is 5 + 3?</div>
+            <button class="answer-option" data-answer="1">A) 6</button>
+            <button class="answer-option" data-answer="2">B) 7</button>
+            <button class="answer-option" data-answer="3">C) 8</button>
+            <button class="answer-option" data-answer="4">D) 9</button>
+            <div style="color: #b2bec3; text-align: center; margin-top: 20px; font-size: 14px;">
+                Answer correctly to continue!
+            </div>
+        </div>
+        
+        <!-- Game Over Screen -->
+        <div id="game-over">
+            <h1 style="color: #e74c3c; font-size: 48px; margin-bottom: 20px;">GAME OVER</h1>
+            <div style="color: white; font-size: 24px; margin-bottom: 10px;">
+                Final Score: <span style="color: #00cec9;" id="final-score">0</span>
+            </div>
+            <div style="color: #f6b93b; font-size: 20px; margin-bottom: 30px;">
+                Checkpoints Reached: <span id="final-checkpoints">0/7</span>
+            </div>
+            <button id="restart-btn" style="
+                background: linear-gradient(45deg, #e74c3c, #c0392b);
+                color: white;
+                border: none;
+                padding: 15px 40px;
+                font-size: 20px;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: all 0.3s;
+                font-weight: bold;
+            ">PLAY AGAIN</button>
+            <div style="color: #b2bec3; margin-top: 20px; font-size: 14px;">
+                Press SPACE to restart
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===================== KONFIGURASI GAME =====================
+        const CONFIG = {
+            PLAYER_SPEED: 5,
+            MAX_SPEED: 15,
+            ACCELERATION: 0.1,
+            FRICTION: 0.03,
+            GRAVITY: 0.2,
+            ROAD_WIDTH: 800,
+            ROAD_HEIGHT: 120,
+            CHECKPOINT_COUNT: 7,
+            INITIAL_HEALTH: 100,
+            MATH_QUESTIONS: [
+                { question: "What is 15 + 27?", options: ["42", "38", "45", "32"], correct: 1 },
+                { question: "Multiply 8 × 6", options: ["42", "48", "54", "56"], correct: 2 },
+                { question: "Divide 144 ÷ 12", options: ["10", "11", "12", "13"], correct: 3 },
+                { question: "What is ¾ of 100?", options: ["65", "70", "75", "80"], correct: 3 },
+                { question: "Solve: 5² + 3²", options: ["25", "34", "36", "38"], correct: 2 },
+                { question: "15% of 200 is?", options: ["20", "25", "30", "35"], correct: 3 },
+                { question: "If x + 7 = 15, x = ?", options: ["6", "7", "8", "9"], correct: 3 },
+                { question: "What is √144?", options: ["10", "11", "12", "13"], correct: 3 },
+                { question: "3 × 4 + 5 × 2", options: ["22", "24", "26", "28"], correct: 1 },
+                { question: "2³ + 3² = ?", options: ["15", "17", "19", "21"], correct: 2 }
+            ],
+            OBSTACLE_TYPES: [
+                { name: "rock", width: 60, height: 40, color: "#7f8c8d" },
+                { name: "log", width: 100, height: 30, color: "#8B4513" },
+                { name: "hole", width: 80, height: 20, color: "#2c3e50" },
+                { name: "barrier", width: 70, height: 50, color: "#e74c3c" }
+            ]
+        };
+
+        // ===================== STATE GAME =====================
+        let gameState = {
+            score: 0,
+            health: CONFIG.INITIAL_HEALTH,
+            speed: 0,
+            position: { x: 450, y: 0 },
+            angle: 0,
+            gameActive: true,
+            currentCheckpoint: 0,
+            checkpoints: [],
+            obstacles: [],
+            clouds: [],
+            trees: [],
+            checkpointPositions: [],
+            isMovingForward: false,
+            isMovingBackward: false,
+            mathQuestionActive: false,
+            gameTime: 0,
+            backgroundOffset: 0,
+            tilt: 0
+        };
+
+        // ===================== ELEMEN DOM =====================
+        const gameContainer = document.getElementById('game-container');
+        const mountainRoad = document.getElementById('mountain-road');
+        const playerCar = document.getElementById('player-car');
+        const healthBar = document.getElementById('health-bar');
+        const healthText = document.getElementById('health-text');
+        const scoreElement = document.getElementById('score');
+        const checkpointCounter = document.getElementById('checkpoint-counter');
+        const tiltValue = document.getElementById('tilt-value');
+        const mathQuestion = document.getElementById('math-question');
+        const questionText = document.getElementById('question-text');
+        const gameOverScreen = document.getElementById('game-over');
+        const finalScore = document.getElementById('final-score');
+        const finalCheckpoints = document.getElementById('final-checkpoints');
+        const restartBtn = document.getElementById('restart-btn');
+        const explosion = document.getElementById('explosion');
+        const hammer = document.getElementById('hammer');
+
+        // ===================== INISIALISASI =====================
+        function initGame() {
+            gameState = {
+                score: 0,
+                health: CONFIG.INITIAL_HEALTH,
+                speed: 0,
+                position: { x: 450, y: 0 },
+                angle: 0,
+                gameActive: true,
+                currentCheckpoint: 0,
+                checkpoints: [],
+                obstacles: [],
+                clouds: [],
+                trees: [],
+                checkpointPositions: [],
+                isMovingForward: false,
+                isMovingBackward: false,
+                mathQuestionActive: false,
+                gameTime: 0,
+                backgroundOffset: 0,
+                tilt: 0
+            };
+
+            // Reset tampilan
+            healthBar.style.width = '100%';
+            healthText.textContent = '100%';
+            scoreElement.textContent = '0';
+            checkpointCounter.textContent = '0/7';
+            tiltValue.textContent = '0°';
+            mathQuestion.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            explosion.style.opacity = '0';
+            hammer.style.display = 'none';
+            playerCar.style.transform = 'translate(0, 0) rotate(0deg)';
+
+            // Hapus elemen lama
+            clearGameElements();
+
+            // Generate checkpoint positions
+            generateCheckpointPositions();
+
+            // Buat checkpoint
+            createCheckpoints();
+
+            // Buat awan
+            createClouds();
+
+            // Buat pohon
+            createTrees();
+
+            // Mulai game loop
+            requestAnimationFrame(gameLoop);
+
+            // Timer untuk game
+            setInterval(() => {
+                if (gameState.gameActive && !gameState.mathQuestionActive) {
+                    gameState.gameTime++;
+                }
+            }, 1000);
+        }
+
+        // ===================== GENERATE POSISI CHECKPOINT =====================
+        function generateCheckpointPositions() {
+            gameState.checkpointPositions = [];
+            const segmentWidth = 1000;
+            
+            for (let i = 0; i < CONFIG.CHECKPOINT_COUNT; i++) {
+                gameState.checkpointPositions.push({
+                    x: (i + 1) * segmentWidth,
+                    y: Math.sin(i * 0.5) * 100 // Gelombang sinusoidal untuk efek pegunungan
+                });
+            }
+        }
+
+        // ===================== BUAT CHECKPOINT =====================
+        function createCheckpoints() {
+            const container = document.getElementById('checkpoints-container');
+            
+            gameState.checkpointPositions.forEach((pos, index) => {
+                const checkpoint = document.createElement('div');
+                checkpoint.className = 'checkpoint';
+                checkpoint.style.left = `${pos.x}px`;
+                checkpoint.style.bottom = `${pos.y + 80}px`;
+                checkpoint.textContent = `CP ${index + 1}`;
+                checkpoint.dataset.index = index;
+                
+                container.appendChild(checkpoint);
+                gameState.checkpoints.push({
+                    element: checkpoint,
+                    x: pos.x,
+                    y: pos.y + 80,
+                    width: 100,
+                    height: 50,
+                    index: index,
+                    active: true
+                });
+            });
+        }
+
+        // ===================== BUAT AWAN =====================
+        function createClouds() {
+            const container = document.getElementById('clouds-container');
+            
+            for (let i = 0; i < 15; i++) {
+                const cloud = document.createElement('div');
+                cloud.className = 'cloud';
+                
+                const size = Math.random() * 120 + 80;
+                const height = Math.random() * 300 + 50;
+                const duration = Math.random() * 40 + 30;
+                
+                cloud.style.width = `${size}px`;
+                cloud.style.height = `${size * 0.4}px`;
+                cloud.style.top = `${height}px`;
+                cloud.style.left = `${Math.random() * 3000}px`;
+                cloud.style.opacity = Math.random() * 0.5 + 0.5;
+                cloud.style.animationDuration = `${duration}s`;
+                
+                container.appendChild(cloud);
+                gameState.clouds.push({
+                    element: cloud,
+                    x: parseInt(cloud.style.left),
+                    speed: 1000 / duration
+                });
+            }
+        }
+
+        // ===================== BUAT POHON =====================
+        function createTrees() {
+            const container = document.getElementById('trees-container');
+            
+            for (let i = 0; i < 50; i++) {
+                const tree = document.createElement('div');
+                tree.className = 'tree';
+                
+                const x = Math.random() * 4000;
+                const size = Math.random() * 0.8 + 0.5;
+                
+                tree.style.left = `${x}px`;
+                tree.style.bottom = `${Math.sin(x * 0.002) * 50 + 100}px`;
+                tree.style.transform = `scale(${size})`;
+                
+                const trunk = document.createElement('div');
+                trunk.className = 'tree-trunk';
+                
+                const leaves = document.createElement('div');
+                leaves.className = 'tree-leaves';
+                
+                tree.appendChild(trunk);
+                tree.appendChild(leaves);
+                container.appendChild(tree);
+                
+                gameState.trees.push({
+                    element: tree,
+                    x: x,
+                    y: parseInt(tree.style.bottom)
+                });
+            }
+        }
+
+        // ===================== BUAT RINTANGAN =====================
+        function createObstacle() {
+            if (!gameState.gameActive || gameState.mathQuestionActive) return;
+            
+            const container = document.getElementById('obstacles-container');
+            const type = CONFIG.OBSTACLE_TYPES[Math.floor(Math.random() * CONFIG.OBSTACLE_TYPES.length)];
+            
+            const obstacle = document.createElement('div');
+            obstacle.className = 'obstacle';
+            obstacle.style.width = `${type.width}px`;
+            obstacle.style.height = `${type.height}px`;
+            obstacle.style.backgroundColor = type.color;
+            obstacle.style.left = `${gameState.backgroundOffset + 1200 + Math.random() * 200}px`;
+            obstacle.style.bottom = `${Math.sin((gameState.backgroundOffset + 1200) * 0.002) * 50 + 90}px`;
+            
+            container.appendChild(obstacle);
+            
+            gameState.obstacles.push({
+                element: obstacle,
+                x: parseInt(obstacle.style.left),
+                y: parseInt(obstacle.style.bottom),
+                width: type.width,
+                height: type.height,
+                type: type.name
+            });
+        }
+
+        // ===================== HAPUS ELEMEN GAME =====================
+        function clearGameElements() {
+            ['checkpoints-container', 'obstacles-container', 'clouds-container', 'trees-container']
+                .forEach(id => {
+                    const container = document.getElementById(id);
+                    while (container.firstChild) {
+                        container.removeChild(container.firstChild);
+                    }
+                });
+            
+            gameState.checkpoints = [];
+            gameState.obstacles = [];
+            gameState.clouds = [];
+            gameState.trees = [];
+        }
+
+        // ===================== GAME LOOP =====================
+        function gameLoop() {
+            if (!gameState.gameActive) return;
+            
+            // Update kecepatan berdasarkan input
+            updateSpeed();
+            
+            // Update posisi background
+            updateBackground();
+            
+            // Update posisi mobil
+            updateCarPosition();
+            
+            // Update objek game
+            updateGameObjects();
+            
+            // Cek tabrakan
+            checkCollisions();
+            
+            // Cek checkpoint
+            checkCheckpoints();
+            
+            // Update UI
+            updateUI();
+            
+            // Lanjutkan game loop
+            requestAnimationFrame(gameLoop);
+        }
+
+        // ===================== UPDATE KECEPATAN =====================
+        function updateSpeed() {
+            if (gameState.mathQuestionActive) {
+                gameState.speed *= 0.9; // Perlahan berhenti saat soal matematika
+                return;
+            }
+            
+            if (gameState.isMovingForward) {
+                gameState.speed += CONFIG.ACCELERATION;
+            } else if (gameState.isMovingBackward) {
+                gameState.speed -= CONFIG.ACCELERATION;
+            } else {
+                // Gesekan
+                gameState.speed *= (1 - CONFIG.FRICTION);
+            }
+            
+            // Batasi kecepatan
+            gameState.speed = Math.max(-3, Math.min(gameState.speed, CONFIG.MAX_SPEED));
+        }
+
+        // ===================== UPDATE BACKGROUND =====================
+        function updateBackground() {
+            if (gameState.mathQuestionActive) return;
+            
+            gameState.backgroundOffset -= gameState.speed * 2;
+            mountainRoad.style.transform = `translateX(${gameState.backgroundOffset}px)`;
+            
+            // Update kemiringan berdasarkan posisi di jalan
+            const wavePosition = gameState.backgroundOffset * 0.002;
+            gameState.tilt = Math.sin(wavePosition) * 15;
+            tiltValue.textContent = `${Math.round(gameState.tilt)}°`;
+            
+            // Buat rintangan secara acak
+            if (Math.random() < 0.02 && gameState.speed > 0) {
+                createObstacle();
+            }
+        }
+
+        // ===================== UPDATE POSISI MOBIL =====================
+        function updateCarPosition() {
+            // Hitung posisi Y berdasarkan gelombang jalan
+            const roadWave = Math.sin(gameState.backgroundOffset * 0.002) * 50;
+            
+            // Hitung rotasi berdasarkan kemiringan dan kecepatan
+            let rotation = gameState.tilt;
+            
+            // Efek fisika saat belok tajam
+            if (Math.abs(gameState.tilt) > 10 && gameState.speed > 5) {
+                rotation += (gameState.speed * 0.5) * Math.sign(gameState.tilt);
+            }
+            
+            // Batasi rotasi maksimal (untuk mencegah terbalik)
+            rotation = Math.max(-45, Math.min(45, rotation));
+            
+            // Cek jika mobil terbalik
+            if (Math.abs(rotation) > 40 && gameState.speed > 3) {
+                crashCar();
+                return;
+            }
+            
+            // Update transform mobil
+            playerCar.style.transform = `translate(${gameState.position.x}px, ${roadWave}px) rotate(${rotation}deg)`;
+            
+            // Update posisi Y untuk perhitungan tabrakan
+            gameState.position.y = roadWave;
+        }
+
+        // ===================== UPDATE OBJEK GAME =====================
+        function updateGameObjects() {
+            // Update checkpoint
+            gameState.checkpoints.forEach(checkpoint => {
+                if (checkpoint.active) {
+                    checkpoint.element.style.left = `${checkpoint.x + gameState.backgroundOffset}px`;
+                    
+                    // Efek visual checkpoint aktif
+                    const pulse = Math.sin(Date.now() * 0.005) * 0.2 + 1;
+                    checkpoint.element.style.transform = `scale(${pulse})`;
+                }
+            });
+            
+            // Update rintangan
+            for (let i = gameState.obstacles.length - 1; i >= 0; i--) {
+                const obstacle = gameState.obstacles[i];
+                obstacle.x += gameState.backgroundOffset - gameState.speed * 2;
+                obstacle.element.style.left = `${obstacle.x}px`;
+                
+                // Update posisi Y berdasarkan gelombang jalan
+                const roadWave = Math.sin(obstacle.x * 0.002) * 50;
+                obstacle.y = roadWave + 90;
+                obstacle.element.style.bottom = `${obstacle.y}px`;
+                
+                // Hapus jika keluar layar
+                if (obstacle.x < -200) {
+                    obstacle.element.remove();
+                    gameState.obstacles.splice(i, 1);
+                }
+            }
+            
+            // Update awan
+            gameState.clouds.forEach(cloud => {
+                cloud.x -= cloud.speed;
+                cloud.element.style.left = `${cloud.x}px`;
+                
+                if (cloud.x < -200) {
+                    cloud.x = 1200;
+                    cloud.element.style.top = `${Math.random() * 300 + 50}px`;
+                }
+            });
+            
+            // Update pohon
+            gameState.trees.forEach(tree => {
+                tree.x += gameState.backgroundOffset;
+                tree.element.style.left = `${tree.x}px`;
+                
+                // Update posisi Y berdasarkan gelombang
+                const wavePos = Math.sin(tree.x * 0.002) * 50;
+                tree.element.style.bottom = `${wavePos + 100}px`;
+                
+                if (tree.x < -200) {
+                    tree.x += 4000;
+                }
+            });
+        }
+
+        // ===================== CEK TABRAKAN =====================
+        function checkCollisions() {
+            const carRect = {
+                left: gameState.position.x,
+                right: gameState.position.x + 100,
+                top: gameState.position.y,
+                bottom: gameState.position.y + 50
+            };
+            
+            // Cek tabrakan dengan rintangan
+            for (let i = gameState.obstacles.length - 1; i >= 0; i--) {
+                const obstacle = gameState.obstacles[i];
+                
+                const obstacleRect = {
+                    left: obstacle.x,
+                    right: obstacle.x + obstacle.width,
+                    top: obstacle.y,
+                    bottom: obstacle.y + obstacle.height
+                };
+                
+                if (carRect.left < obstacleRect.right &&
+                    carRect.right > obstacleRect.left &&
+                    carRect.top < obstacleRect.bottom &&
+                    carRect.bottom > obstacleRect.top) {
+                    
+                    takeDamage(15);
+                    obstacle.element.remove();
+                    gameState.obstacles.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
+        // ===================== CEK CHECKPOINT =====================
+        function checkCheckpoints() {
+            const carCenterX = gameState.position.x + 50;
+            
+            gameState.checkpoints.forEach((checkpoint, index) => {
+                if (!checkpoint.active) return;
+                
+                const checkpointRect = {
+                    left: checkpoint.x + gameState.backgroundOffset,
+                    right: checkpoint.x + gameState.backgroundOffset + checkpoint.width,
+                    top: checkpoint.y - 25,
+                    bottom: checkpoint.y + 25
+                };
+                
+                if (carCenterX > checkpointRect.left && carCenterX < checkpointRect.right) {
+                    checkpoint.active = false;
+                    checkpoint.element.style.background = 'rgba(46, 204, 113, 0.7)';
+                    checkpoint.element.style.border = '3px solid #2ecc71';
+                    checkpoint.element.innerHTML = '<i class="fas fa-check"></i>';
+                    
+                    gameState.currentCheckpoint++;
+                    gameState.score += 500;
+                    
+                    // Tampilkan soal matematika setiap checkpoint ke-2
+                    if (gameState.currentCheckpoint > 0 && gameState.currentCheckpoint % 2 === 0) {
+                        showMathQuestion();
+                    }
+                    
+                    // Cek jika semua checkpoint tercapai
+                    if (gameState.currentCheckpoint === CONFIG.CHECKPOINT_COUNT) {
+                        gameWin();
+                    }
+                }
+            });
+        }
+
+        // ===================== TAMPILKAN SOAL MATEMATIKA =====================
+        function showMathQuestion() {
+            gameState.mathQuestionActive = true;
+            
+            const randomQuestion = CONFIG.MATH_QUESTIONS[
+                Math.floor(Math.random() * CONFIG.MATH_QUESTIONS.length)
+            ];
+            
+            questionText.textContent = randomQuestion.question;
+            
+            const answerButtons = mathQuestion.querySelectorAll('.answer-option');
+            answerButtons.forEach((btn, index) => {
+                btn.textContent = `${String.fromCharCode(65 + index)}) ${randomQuestion.options[index]}`;
+                btn.onclick = () => checkAnswer(index + 1, randomQuestion.correct);
+            });
+            
+            mathQuestion.style.display = 'block';
+        }
+
+        // ===================== CEK JAWABAN =====================
+        function checkAnswer(selected, correct) {
+            if (selected === correct) {
+                // Jawaban benar
+                mathQuestion.style.borderColor = '#2ecc71';
+                setTimeout(() => {
+                    mathQuestion.style.display = 'none';
+                    mathQuestion.style.borderColor = '#00cec9';
+                    gameState.mathQuestionActive = false;
+                    gameState.score += 200;
+                }, 1000);
+            } else {
+                // Jawaban salah - mobil diketok palu
+                mathQuestion.style.borderColor = '#e74c3c';
+                hammer.style.display = 'block';
+                hammer.style.left = `${gameState.position.x + 30}px`;
+                hammer.style.top = `${gameState.position.y - 100}px`;
+                
+                // Animasi palu
+                let rotation = 0;
+                const hammerAnimation = setInterval(() => {
+                    rotation += 20;
+                    hammer.style.transform = `rotate(${rotation}deg)`;
+                    
+                    if (rotation >= 120) {
+                        clearInterval(hammerAnimation);
+                        
+                        // Efek palu memukul
+                        takeDamage(25);
+                        
+                        // Sembunyikan palu
+                        setTimeout(() => {
+                            hammer.style.display = 'none';
+                            hammer.style.transform = 'rotate(0deg)';
+                            mathQuestion.style.display = 'none';
+                            mathQuestion.style.borderColor = '#00cec9';
+                            gameState.mathQuestionActive = false;
+                        }, 500);
+                    }
+                }, 30);
+            }
+        }
+
+        // ===================== TERIMA DAMAGE =====================
+        function takeDamage(amount) {
+            gameState.health -= amount;
+            
+            if (gameState.health < 0) gameState.health = 0;
+            
+            // Update health bar
+            const healthPercent = (gameState.health / CONFIG.INITIAL_HEALTH) * 100;
+            healthBar.style.width = `${healthPercent}%`;
+            healthText.textContent = `${Math.round(healthPercent)}%`;
+            
+            // Ganti warna health bar berdasarkan kesehatan
+            if (healthPercent > 60) {
+                healthBar.style.background = 'linear-gradient(90deg, #2ecc71, #f1c40f)';
+            } else if (healthPercent > 30) {
+                healthBar.style.background = 'linear-gradient(90deg, #f1c40f, #e74c3c)';
+            } else {
+                healthBar.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+            }
+            
+            // Cek game over
+            if (gameState.health <= 0) {
+                gameOver();
+            }
+        }
+
+        // ===================== MOBIL TABRAK/TERBALIK =====================
+        function crashCar() {
+            gameState.gameActive = false;
+            
+            // Efek ledakan
+            explosion.style.left = `${gameState.position.x}px`;
+            explosion.style.top = `${gameState.position.y}px`;
+            explosion.style.opacity = '1';
+            
+            // Animasi ledakan
+            let size = 50;
+            const explode = setInterval(() => {
+                size += 20;
+                explosion.style.width = `${size}px`;
+                explosion.style.height = `${size}px`;
+                
+                if (size > 300) {
+                    clearInterval(explode);
+                    explosion.style.opacity = '0';
+                    gameOver();
+                }
+            }, 50);
+        }
+
+        // ===================== MENANG GAME =====================
+        function gameWin() {
+            gameState.gameActive = false;
+            gameState.score += 5000;
+            
+            const winScreen = document.createElement('div');
+            winScreen.style.cssText = `
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.95);
+                padding: 40px;
+                border-radius: 20px;
+                border: 5px solid #2ecc71;
+                z-index: 1000;
+                text-align: center;
+                min-width: 400px;
+                color: white;
+            `;
+            
+            winScreen.innerHTML = `
+                <h1 style="color: #2ecc71; font-size: 48px; margin-bottom: 20px;">VICTORY!</h1>
+                <div style="font-size: 24px; margin-bottom: 10px;">
+                    Final Score: <span style="color: #00cec9;">${gameState.score}</span>
+                </div>
+                <div style="color: #f6b93b; font-size: 20px; margin-bottom: 30px;">
+                    All Checkpoints Reached!
+                </div>
+                <button onclick="initGame()" style="
+                    background: linear-gradient(45deg, #2ecc71, #27ae60);
+                    color: white;
+                    border: none;
+                    padding: 15px 40px;
+                    font-size: 20px;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-weight: bold;
+                ">PLAY AGAIN</button>
+            `;
+            
+            gameContainer.appendChild(winScreen);
+        }
+
+        // ===================== GAME OVER =====================
+        function gameOver() {
+            gameState.gameActive = false;
+            
+            // Update high score di localStorage
+            const highScore = localStorage.getItem('mountainRacerHighScore') || 0;
+            if (gameState.score > highScore) {
+                localStorage.setItem('mountainRacerHighScore', gameState.score);
+            }
+            
+            // Tampilkan game over screen
+            finalScore.textContent = gameState.score;
+            finalCheckpoints.textContent = `${gameState.currentCheckpoint}/${CONFIG.CHECKPOINT_COUNT}`;
+            gameOverScreen.style.display = 'block';
+        }
+
+        // ===================== UPDATE UI =====================
+        function updateUI() {
+            scoreElement.textContent = gameState.score;
+            checkpointCounter.textContent = `${gameState.currentCheckpoint}/${CONFIG.CHECKPOINT_COUNT}`;
+            
+            // Update score berdasarkan kecepatan
+            if (gameState.speed > 0 && !gameState.mathQuestionActive) {
+                gameState.score += Math.floor(gameState.speed);
+            }
+        }
+
+        // ===================== EVENT LISTENERS =====================
+        document.addEventListener('keydown', (e) => {
+            if (!gameState.gameActive) {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    initGame();
+                }
+                return;
+            }
+            
+            if (gameState.mathQuestionActive) return;
+            
+            if (e.key === 'd' || e.key === 'D') {
+                gameState.isMovingForward = true;
+                e.preventDefault();
+            } else if (e.key === 'a' || e.key === 'A') {
+                gameState.isMovingBackward = true;
+                e.preventDefault();
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'd' || e.key === 'D') {
+                gameState.isMovingForward = false;
+            } else if (e.key === 'a' || e.key === 'A') {
+                gameState.isMovingBackward = false;
+            }
+        });
+        
+        // Tombol restart
+        restartBtn.addEventListener('click', initGame);
+        
+        // Inisialisasi game
+        initGame();
+    </script>
+</body>
+</html>

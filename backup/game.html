@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-black font-poppins">
+
+    <div class="bg-white border-4 border-cyan-400 rounded-2xl shadow-2xl w-[90vw] max-w-[900px] h-[53vh] overflow-hidden relative">
+
+        <!-- BACKGROUND -->
+        <div id="bg-strip" class="absolute top-0 left-0 h-full flex">
+            <img src="public/1.png" class="h-full w-auto">
+            <img src="public/2.png" class="h-full w-auto">
+            <img src="public/3.png" class="h-full w-auto">
+            <img src="public/pos1.png" class="h-full w-auto">
+            <img src="public/4.png" class="h-full w-auto">
+            <img src="public/pos2.png" class="h-full w-auto">
+            <img src="public/5.png" class="h-full w-auto">
+            <img src="public/pos3.png" class="h-full w-auto">
+            <img src="public/6.png" class="h-full w-auto">
+            <img src="public/pos4.png" class="h-full w-auto">
+            <img src="public/7.png" class="h-full w-auto">
+            <img src="public/pos5.png" class="h-full w-auto">
+            <img src="public/8.png" class="h-full w-auto">
+            <img src="public/akhir.png" class="h-full w-auto">
+        </div>
+
+        <!-- MOBIL -->
+        <div id="car" class="absolute -bottom-2 left-10 z-10 transition-transform duration-100">
+            <img src="public/mobil.png" class="w-auto h-[180px] object-contain">
+        </div>
+
+        <!-- QUESTION BOX -->
+        <div id="quizBox" class="hidden absolute inset-0 flex items-center justify-center z-20">
+            <div class="p-6 rounded-xl text-center text-black w-[90%] max-w-md" style="
+            background: linear-gradient(90deg, #00FFF5, #00BFFF);
+            background-color: rgba(0, 255, 245, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 245, 0.2);
+        ">
+                <h2 id="question" class="text-lg font-semibold mb-4"></h2>
+                <div id="answers" class="space-y-2"></div>
+            </div>
+        </div>
+
+        <!-- HEALTH BAR (SCORE) -->
+        <div class="absolute top-4 right-4 bg-black/70 text-white px-4 py-2 rounded-lg font-bold z-10">
+            <div class="flex items-center gap-2">
+                <div class="w-32 h-4 bg-gray-700 rounded-full overflow-hidden">
+                    <div id="healthBar" class="h-full bg-red-500 rounded-full transition-all duration-300" style="width: 100%"></div>
+                </div>
+                <span id="scoreValue">100</span>
+            </div>
+        </div>
+
+        <!-- CONTROLS INFO -->
+        <div class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-lg font-medium z-10 text-sm">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-1">
+                    <span class="bg-gray-800 px-2 py-1 rounded">A</span>
+                    <span class="text-xs">← Mundur</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="bg-gray-800 px-2 py-1 rounded">D</span>
+                    <span class="text-xs">→ Maju</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAME OVER OVERLAY -->
+        <div id="gameOverOverlay" class="hidden absolute inset-0 bg-black/80 flex items-center justify-center z-30">
+            <div class="text-center p-8 rounded-2xl w-[90%] max-w-md" style="
+                background: linear-gradient(135deg, #FF416C, #FF4B2B);
+                box-shadow: 0 20px 40px rgba(255, 65, 108, 0.4);
+            ">
+                <h2 class="text-5xl font-bold text-white mb-4">GAME OVER</h2>
+                <p class="text-xl text-white/90 mb-6">Skor Akhir: <span id="finalScore" class="font-bold">0</span></p>
+                <button onclick="restartGame()" class="bg-white text-red-600 font-bold px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-lg">
+                    MAIN LAGI
+                </button>
+            </div>
+        </div>
+
+        <!-- WINNER OVERLAY -->
+        <div id="winnerOverlay" class="hidden absolute inset-0 bg-black/80 flex items-center justify-center z-30">
+            <div class="text-center p-8 rounded-2xl w-[90%] max-w-md bg-black border-4" style="
+        border-color: #00FFF5;
+        box-shadow: 0 0 30px rgba(0, 255, 245, 0.5), inset 0 0 20px rgba(0, 255, 245, 0.1);
+    ">
+                <h2 class="text-5xl font-bold text-white mb-4">WINNER!</h2>
+                <div class="text-white/90 mb-6 space-y-3">
+                    <p class="text-xl">Skor Akhir: <span id="winnerScore" class="font-bold text-2xl" style="color: #00FFF5;">100</span></p>
+                    <div id="winnerMessage" class="text-lg">
+                        <!-- Message akan diisi oleh JavaScript -->
+                    </div>
+                </div>
+                <button onclick="restartGame()" class="font-bold px-8 py-3 rounded-lg transition-colors duration-200 text-lg" style="
+            background: #00FFF5;
+            color: black;
+        ">
+                    MAIN LAGI
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const strip = document.getElementById('bg-strip');
+        const quizBox = document.getElementById('quizBox');
+        const questionEl = document.getElementById('question');
+        const answersEl = document.getElementById('answers');
+        const scoreValue = document.getElementById('scoreValue');
+        const healthBar = document.getElementById('healthBar');
+        const gameOverOverlay = document.getElementById('gameOverOverlay');
+        const winnerOverlay = document.getElementById('winnerOverlay');
+        const winnerScore = document.getElementById('winnerScore');
+        const winnerMessage = document.getElementById('winnerMessage');
+        const finalScore = document.getElementById('finalScore');
+        const car = document.getElementById('car');
+
+        let position = 0;
+        let speed = 0;
+        const maxSpeed = 6;
+        const friction = 0.12;
+
+        const imgWidth = 900;
+        const leftLimit = 0;
+
+        const posIndexes = [3, 5, 7, 9, 11];
+        let currentPos = 0;
+        let score = 100;
+        let finished = false;
+        let quizActive = false;
+        let answeredPositions = [false, false, false, false, false];
+        let wrongAnswers = 0;
+
+        // Variabel untuk mobil
+        let carPosition = 0;
+        const carSpeedFactor = 0.03; // DIPERLAMBAT dari 0.1 menjadi 0.03
+        const maxCarPosition = 700; // Batas maksimal mobil ke kanan (agar tidak keluar)
+
+        function updateCarPosition() {
+            // Mobil mengikuti scroll background dengan faktor yang lebih kecil
+            carPosition = Math.abs(position) * carSpeedFactor;
+
+            // Batasi agar mobil tidak keluar dari background
+            if (carPosition > maxCarPosition) {
+                carPosition = maxCarPosition;
+            }
+
+            car.style.transform = `translateX(${carPosition}px)`;
+        }
+
+        function randomQuestion() {
+            const a = Math.floor(Math.random() * 10) + 1;
+            const b = Math.floor(Math.random() * 10) + 1;
+            const correct = a * b;
+
+            const options = new Set();
+            options.add(correct);
+
+            while (options.size < 4) {
+                const offset = Math.floor(Math.random() * 5) + 1;
+                const sign = Math.random() > 0.5 ? 1 : -1;
+                const wrongAnswer = correct + (sign * offset);
+                if (wrongAnswer > 0 && wrongAnswer !== correct) {
+                    options.add(wrongAnswer);
+                }
+            }
+
+            return {
+                q: `${a} × ${b} = ?`,
+                correct,
+                options: Array.from(options).sort(() => Math.random() - 0.5)
+            };
+        }
+
+        function showQuiz() {
+            if (quizActive || finished || answeredPositions[currentPos]) return;
+
+            quizActive = true;
+            const data = randomQuestion();
+
+            quizBox.classList.remove('hidden');
+            questionEl.textContent = data.q;
+            answersEl.innerHTML = '';
+
+            data.options.forEach(val => {
+                const btn = document.createElement('button');
+                btn.textContent = val;
+                btn.className = 'w-full bg-white/80 hover:bg-white px-4 py-2 rounded font-medium transition-all duration-200 flex items-center justify-center relative';
+                btn.dataset.value = val;
+
+                btn.onclick = () => handleAnswer(val, data.correct);
+                answersEl.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selected, correct) {
+            const buttons = answersEl.querySelectorAll('button');
+            buttons.forEach(btn => {
+                const btnVal = parseInt(btn.dataset.value);
+
+                if (btnVal === correct) {
+                    btn.style.background = 'linear-gradient(90deg, #4CAF50, #45a049)';
+                    btn.innerHTML = btnVal + ' <span class="ml-2 font-bold">✓</span>';
+                } else if (btnVal === selected && selected !== correct) {
+                    btn.style.background = 'linear-gradient(90deg, #FF416C, #FF4B2B)';
+                    btn.innerHTML = btnVal + ' <span class="ml-2 font-bold">✗</span>';
+                }
+
+                btn.disabled = true;
+            });
+
+            setTimeout(() => {
+                quizBox.classList.add('hidden');
+                quizActive = false;
+
+                answeredPositions[currentPos] = true;
+
+                if (selected !== correct) {
+                    wrongAnswers++;
+                    score -= 20;
+                    scoreValue.textContent = score;
+                    healthBar.style.width = score + '%';
+
+                    if (score <= 0) {
+                        showGameOver();
+                        return;
+                    }
+                }
+
+                speed = -3;
+
+                buttons.forEach(btn => {
+                    btn.style.background = '';
+                    btn.disabled = false;
+                    btn.innerHTML = btn.dataset.value;
+                });
+            }, 1500);
+        }
+
+        function showGameOver() {
+            finished = true;
+            finalScore.textContent = score;
+            gameOverOverlay.classList.remove('hidden');
+        }
+
+        function showWinner() {
+            finished = true;
+            winnerScore.textContent = score;
+
+            // Tentukan pesan berdasarkan jumlah salah
+            let message = "";
+            if (wrongAnswers === 0) {
+                message = "Selamat! Anda tidak terlambat";
+            } else if (wrongAnswers === 1) {
+                message = "Anda terlambat 5 menit";
+            } else if (wrongAnswers === 2) {
+                message = "Anda terlambat 10 menit";
+            } else if (wrongAnswers === 3) {
+                message = "Anda terlambat 15 menit";
+            } else if (wrongAnswers === 4) {
+                message = "Anda terlambat 20 menit";
+            } else if (wrongAnswers >= 5) {
+                message = "Anda terlambat terlalu lama untuk kuliah. Coba lagi!";
+            }
+
+            winnerMessage.innerHTML = `<p class="text-lg">${message}</p>`;
+            winnerOverlay.classList.remove('hidden');
+        }
+
+        function restartGame() {
+            position = 0;
+            speed = 0;
+            currentPos = 0;
+            score = 100;
+            wrongAnswers = 0;
+            finished = false;
+            quizActive = false;
+            answeredPositions = [false, false, false, false, false];
+            carPosition = 0;
+
+            scoreValue.textContent = score;
+            healthBar.style.width = '100%';
+            gameOverOverlay.classList.add('hidden');
+            winnerOverlay.classList.add('hidden');
+            strip.style.transform = `translateX(${position}px)`;
+            car.style.transform = `translateX(0px)`;
+
+            update();
+        }
+
+        function update() {
+            if (finished || quizActive) {
+                requestAnimationFrame(update);
+                return;
+            }
+
+            position += speed;
+            speed *= (1 - friction);
+            if (Math.abs(speed) < 0.05) speed = 0;
+
+            if (position > leftLimit) {
+                position = leftLimit;
+                speed = 0;
+            }
+
+            if (currentPos < posIndexes.length) {
+                const stopPoint = -imgWidth * posIndexes[currentPos];
+
+                if (position <= stopPoint && !answeredPositions[currentPos] && !quizActive) {
+                    position = stopPoint;
+                    speed = 0;
+                    showQuiz();
+                }
+
+                if (answeredPositions[currentPos] && position < stopPoint) {
+                    currentPos++;
+                }
+            }
+
+            const finishPoint = -imgWidth * 12;
+            if (position <= finishPoint) {
+                position = finishPoint;
+                speed = 0;
+                finished = true;
+
+                // Tentukan apakah WINNER atau LOSS
+                if (score > 0 && wrongAnswers < 5) {
+                    setTimeout(() => {
+                        showWinner();
+                    }, 500);
+                } else {
+                    setTimeout(() => {
+                        showGameOver();
+                    }, 500);
+                }
+            }
+
+            strip.style.transform = `translateX(${position}px)`;
+            updateCarPosition();
+            requestAnimationFrame(update);
+        }
+
+        update();
+
+        document.addEventListener('keydown', e => {
+            if (finished || quizActive) return;
+
+            if (e.key === 'd' || e.key === 'ArrowRight') {
+                speed = Math.max(speed - 0.8, -maxSpeed);
+            }
+            if (e.key === 'a' || e.key === 'ArrowLeft') {
+                speed = Math.min(speed + 0.8, maxSpeed);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

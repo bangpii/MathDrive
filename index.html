@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Drive</title>
+
+    <link rel="shortcut icon" href="public/logo.png">
+
+    <!-- Tailwind -->
+    <script src="js/tailwind-config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Spline Viewer -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.28/build/spline-viewer.js"></script>
+
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <!-- Font Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Luckiest Guy -->
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+
+    <!-- CSS External -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="relative min-h-screen overflow-hidden bg-black text-white modal-open:overflow-hidden">
+
+    <!-- 🎮 LOADING SCREEN -->
+    <div id="loading-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-[10px]">
+        <!-- Audio untuk loading -->
+        <audio id="loading-music" preload="auto">
+            <source src="public/music.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- Audio untuk background utama -->
+        <audio id="background-music" preload="auto" loop>
+            <source src="public/music_utama.mp3" type="audio/mpeg">
+        </audio>
+
+        <div id="loading-content" class="text-center px-4">
+            <div class="mb-8">
+                <h2 class="font-['Poppins'] text-2xl sm:text-3xl md:text-4xl text-white mb-4">Loading</h2>
+            </div>
+            <div class="w-64 h-1 bg-gray-800 rounded overflow-hidden mx-auto">
+                <div id="loading-progress" class="h-full bg-[#00FFF5] transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <p id="loading-percentage" class="font-['Poppins'] text-gray-400 mt-2 text-sm">0%</p>
+        </div>
+
+        <!-- Start Button Container -->
+        <div id="start-button-container" class="hidden text-center">
+            <button id="start-button" class="px-12 py-4 bg-[#00FFF5] text-black font-['Poppins'] font-bold rounded-lg hover:bg-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg hover:shadow-[0_0_20px_rgba(0,255,245,0.5)]">
+                MASUK
+            </button>
+            <p class="text-gray-400 text-sm mt-3 font-['Poppins']">Siap bermain? Klik tombol ini untuk masuk</p>
+        </div>
+    </div>
+
+    <!-- 🌌 BACKGROUND 3D (SPLINE UTAMA) - SEMUA DEVICE -->
+    <spline-viewer url="https://prod.spline.design/ux9R6oOFljUNx1et/scene.splinecode" class="fixed inset-0 w-full h-full -z-20 pointer-events-none"></spline-viewer>
+
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 w-full z-40">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-md -z-10"></div>
+        <div class="w-full px-6 md:px-8 lg:px-12 py-5 md:py-6 lg:py-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="public/logo.png" alt="Logo Math Drive" class="w-10 h-10 sm:w-12 sm:h-12 object-contain">
+                <h2 class="text-xl sm:text-2xl font-bold tracking-wide text-white whitespace-nowrap font-['Poppins']">
+                    Math <span class="text-[#00FFF5]">Drive</span>
+                </h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-6 lg:gap-8 text-base font-semibold font-['Poppins']">
+                    <a href="#home" class="nav-link relative text-white px-4 py-3 rounded-lg transition-all duration-300 font-semibold hover:text-[#00FFF5] hover:bg-[rgba(0,255,245,0.15)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(0,255,245,0.2)] active" data-page="home">Home</a>
+                    <a href="#about" class="nav-link relative text-white px-4 py-3 rounded-lg transition-all duration-300 font-semibold hover:text-[#00FFF5] hover:bg-[rgba(0,255,245,0.15)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(0,255,245,0.2)]" data-page="about">About</a>
+                    <a href="#tujuan" class="nav-link relative text-white px-4 py-3 rounded-lg transition-all duration-300 font-semibold hover:text-[#00FFF5] hover:bg-[rgba(0,255,245,0.15)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(0,255,245,0.2)]" data-page="tujuan">Tujuan</a>
+                    <a href="#contact" class="nav-link relative text-white px-4 py-3 rounded-lg transition-all duration-300 font-semibold hover:text-[#00FFF5] hover:bg-[rgba(0,255,245,0.15)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(0,255,245,0.2)]" data-page="contact">Contact</a>
+                </div>
+                <button id="menuBtn" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-white hover:bg-[#00FFF5]/20 transition-all duration-300 z-50">
+                    <i class='bx bx-menu text-2xl'></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileToggleMenu" class="hidden md:hidden fixed top-24 right-5 left-auto bottom-20 w-3/4 max-w-xs bg-white/95 backdrop-blur-lg border border-white/30 rounded-xl shadow-2xl z-50 overflow-hidden translate-x-full">
+            <div class="flex flex-col p-6 h-full justify-start pt-4">
+                <div class="mobile-toggle-item flex items-center px-5 py-3.5 text-white font-semibold rounded-lg transition-all duration-300 my-0.5 bg-white border border-[rgba(0,255,245,0.2)] shadow-[0_2px_8px_rgba(0,0,0,0.1)] cursor-pointer z-50 hover:bg-white hover:border-[rgba(0,255,245,0.4)] hover:translate-x-1 hover:shadow-[0_4px_15px_rgba(0,255,245,0.2)] active" data-page="home">
+                    <i class='bx bx-home text-[#00FFF5] text-xl mr-3'></i>
+                    <span class="text-gray-800 text-base font-['Poppins']">Home</span>
+                </div>
+                <div class="mobile-toggle-item flex items-center px-5 py-3.5 text-white font-semibold rounded-lg transition-all duration-300 my-0.5 bg-white border border-[rgba(0,255,245,0.2)] shadow-[0_2px_8px_rgba(0,0,0,0.1)] cursor-pointer z-50 hover:bg-white hover:border-[rgba(0,255,245,0.4)] hover:translate-x-1 hover:shadow-[0_4px_15px_rgba(0,255,245,0.2)]" data-page="about">
+                    <i class='bx bx-info-circle text-[#00FFF5] text-xl mr-3'></i>
+                    <span class="text-gray-800 text-base font-['Poppins']">About</span>
+                </div>
+                <div class="mobile-toggle-item flex items-center px-5 py-3.5 text-white font-semibold rounded-lg transition-all duration-300 my-0.5 bg-white border border-[rgba(0,255,245,0.2)] shadow-[0_2px_8px_rgba(0,0,0,0.1)] cursor-pointer z-50 hover:bg-white hover:border-[rgba(0,255,245,0.4)] hover:translate-x-1 hover:shadow-[0_4px_15px_rgba(0,255,245,0.2)]" data-page="tujuan">
+                    <i class='bx bx-target-lock text-[#00FFF5] text-xl mr-3'></i>
+                    <span class="text-gray-800 text-base font-['Poppins']">Tujuan</span>
+                </div>
+                <div class="mobile-toggle-item flex items-center px-5 py-3.5 text-white font-semibold rounded-lg transition-all duration-300 my-0.5 bg-white border border-[rgba(0,255,245,0.2)] shadow-[0_2px_8px_rgba(0,0,0,0.1)] cursor-pointer z-50 hover:bg-white hover:border-[rgba(0,255,245,0.4)] hover:translate-x-1 hover:shadow-[0_4px_15px_rgba(0,255,245,0.2)]" data-page="contact">
+                    <i class='bx bx-phone text-[#00FFF5] text-xl mr-3'></i>
+                    <span class="text-gray-800 text-base font-['Poppins']">Contact</span>
+                </div>
+            </div>
+        </div>
+        <div id="popupNotification" class="popup-notification fixed top-28 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#00FFF5]/20 to-[#00BFFF]/20 backdrop-blur-xl border-2 border-[#00FFF5]/40 rounded-xl px-6 py-4 text-white z-50 hidden shadow-2xl shadow-[#00FFF5]/20">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#00FFF5] to-[#00BFFF] flex items-center justify-center">
+                    <i class='bx bx-navigation text-black text-base'></i>
+                </div>
+                <div>
+                    <div class="font-bold text-base font-['Poppins']">Navigation Update</div>
+                    <div id="popupMessage" class="text-sm opacity-90 font-['Poppins']">Navigasi berhasil diubah</div>
+                </div>
+                <button id="closePopup" class="ml-4 text-gray-400 hover:text-white">
+                    <i class='bx bx-x text-xl'></i>
+                </button>
+            </div>
+            <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-transparent via-[#00FFF5] to-transparent rounded-full"></div>
+        </div>
+    </header>
+
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black/40 -z-10"></div>
+
+    <!-- 🎮 3D TEXT SPLINE SECTION (DESKTOP & TABLET) -->
+    <div id="home-content" data-page="home" class="page-content">
+        <!-- CONTAINER UTAMA: Spline + Text + Button -->
+        <div id="spline-text-section" class="relative w-full h-screen hidden md:block">
+            <!-- LAYER 1: SPLINE INTERAKTIF (bisa diklik & dimainin) -->
+            <div class="absolute inset-0 z-20 overflow-hidden">
+                <div class="w-[120%] h-[120%] -left-[10%] -top-[10%] relative animate-float">
+                    <spline-viewer url="https://prod.spline.design/PO0BlDSQ2tBNaxjz/scene.splinecode" class="w-full h-full pointer-events-auto scale-110 animate-slow-spin" loading="eager">
+                    </spline-viewer>
+                </div>
+            </div>
+
+            <!-- LAYER 2: TEXT MATH DRIVE (di atas Spline, TIDAK BISA DIKLIK) -->
+            <div class="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
+                <div class="text-center px-4">
+                    <div class="title-container flex flex-col items-center justify-center">
+                        <h1 id="main-3d-title" class="text-elegant font-['Luckiest_Guy'] text-[clamp(5rem,15vw,20rem)] leading-[0.85] inline-block -tracking-[3px]">
+                            MATH <span class="text-[#00FFF5]">DRIVE</span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAYER 3: START BUTTON (di atas semua, BISA DIKLIK) -->
+            <div class="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none">
+                <div class="text-center px-4 mt-[30rem] pointer-events-auto">
+                    <div id="start-button-container-home" class="relative z-40">
+                        <p id="start-game-text" class="text-white text-lg md:text-xl cursor-pointer hover:text-[#00FFF5] transition-all duration-300 animate-pulse bg-black/40 px-6 py-3 rounded-xl backdrop-blur-sm hover:bg-black/60 hover:scale-105">
+                            Press to Start Game
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🎮 MOBILE CONTENT (Hanya tampil di HP) -->
+        <main id="mobile-content" class="md:hidden relative z-10 flex flex-col items-center justify-center min-h-screen gap-4 px-4 text-center">
+            <div class="mobile-title-container flex flex-col items-center justify-center gap-2 italic">
+                <h1 id="mobile-math" class="font-['Luckiest_Guy'] text-white text-[clamp(6rem,20vw,20rem)] leading-[1] block sm:translate-x-[15px] sm:transition-transform sm:duration-300">
+                    MATH
+                </h1>
+                <h2 id="mobile-drive" class="font-['Luckiest_Guy'] text-[#00FFF5] text-[clamp(6rem,20vw,20rem)] leading-[1] block sm:-translate-x-[5px] sm:transition-transform sm:duration-300">
+                    DRIVE
+                </h2>
+            </div>
+            <p id="start-game-text-mobile" class="text-white text-lg mt-8 cursor-pointer hover:text-[#00FFF5] transition-all duration-300 animate-pulse bg-black/40 px-6 py-3 rounded-xl backdrop-blur-sm hover:bg-black/60 hover:scale-105">
+                Press to Start Game
+            </p>
+        </main>
+    </div>
+
+    <!-- 🎮 GAME SECTION -->
+    <div id="game-content" data-page="game" class="page-content hidden fixed inset-0 z-30 flex items-center justify-center p-4  backdrop-blur-md">
+        <div class="w-[90vw] max-w-[900px] h-[53vh] relative">
+            <!-- CLOSE BUTTON -->
+            <button id="close-game" class="close-page absolute -top-3 -right-3 md:-top-4 md:-right-4 z-50 w-10 h-10 rounded-full bg-[#00FFF5] text-black flex items-center justify-center hover:bg-white transition-all duration-300 shadow-lg border-2 border-black hover:scale-110 hover:shadow-[0_0_20px_rgba(0,255,245,0.5)]">
+                <i class='bx bx-x text-2xl'></i>
+            </button>
+
+            <div class="bg-white border-4 border-cyan-400 rounded-2xl shadow-2xl w-full h-full overflow-hidden relative">
+                <!-- GAME WILL BE LOADED HERE -->
+                <div class="w-full h-full flex items-center justify-center">
+                    <p class="text-gray-500">Game content will be loaded here...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📄 ABOUT SECTION -->
+    <div id="about-content" data-page="about" class="page-content hidden fixed inset-0 z-30 flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="w-[90vw] max-w-[900px] h-[53vh] relative">
+            <!-- CLOSE BUTTON -->
+            <button class="close-page absolute -top-3 -right-3 md:-top-4 md:-right-4 z-50 w-10 h-10 rounded-full bg-[#00FFF5] text-black flex items-center justify-center hover:bg-white transition-all duration-300 shadow-lg border-2 border-black hover:scale-110 hover:shadow-[0_0_20px_rgba(0,255,245,0.5)]">
+                <i class='bx bx-x text-2xl'></i>
+            </button>
+
+            <div class="bg-white border-4 border-cyan-400 rounded-2xl shadow-2xl w-full h-full overflow-hidden relative">
+                <!-- BACKGROUND GAMBAR -->
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('public/bgCard.png');"></div>
+                <!-- OVERLAY GELAP -->
+                <div class="absolute inset-0 bg-black/50"></div>
+
+                <div class="relative w-full h-full flex flex-col p-6 md:p-8 overflow-y-auto custom-scroll">
+                    <!-- JUDUL DITENGAH DENGAN BOLD -->
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center font-['Poppins']">
+                        About <span class="text-[#00FFF5]">Game</span>
+                    </h2>
+
+                    <!-- TEKS DESKRIPSI DENGAN WARNA PUTIH KE ABU-ABU -->
+                    <p class="text-gray-300 font-['Poppins'] text-center text-base md:text-lg leading-relaxed mb-8">
+                        Math Drive adalah game edukasi yang menggabungkan keseruan bermain game dengan pembelajaran matematika.
+                        Game ini dirancang untuk membantu siswa SD belajar dengan cara yang menyenangkan dan interaktif.
+                        Dengan visual yang menarik dan gameplay yang seru, Math Drive membuat belajar matematika tidak lagi membosankan.
+                    </p>
+
+                    <!-- GAP ANTARA TEKS DAN DEVELOPER SECTION -->
+                    <div class="mt-4"></div>
+
+                    <!-- CONTAINER DEVELOPER GRID - RATA TENGAH -->
+                    <div class="flex flex-col items-center">
+                        <!-- ROW 1: 4 DEVELOPER -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6 justify-items-center max-w-4xl mx-auto">
+                            <!-- DEVELOPER 1 -->
+                            <div class="flex flex-col items-center group w-40">
+                                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-[#00FFF5] mb-4 transition-all duration-300 group-hover:border-white group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(0,255,245,0.7)] group-hover:brightness-110">
+                                    <img src="public/develop.png" alt="Developer 1" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-['Poppins'] font-semibold text-white text-base">Trinita Tamaro Tesalonika S</p>
+                                    <p class="font-['Poppins'] italic text-gray-300 text-sm mt-1">110124012</p>
+                                </div>
+                            </div>
+
+                            <!-- DEVELOPER 2 -->
+                            <div class="flex flex-col items-center group w-40">
+                                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-[#00FFF5] mb-4 transition-all duration-300 group-hover:border-white group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(0,255,245,0.7)] group-hover:brightness-110">
+                                    <img src="public/develop.png" alt="Developer 2" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-['Poppins'] font-semibold text-white text-base">Wahyu Ramadhan</p>
+                                    <p class="font-['Poppins'] italic text-gray-300 text-sm mt-1">110124121</p>
+                                </div>
+                            </div>
+
+                            <!-- DEVELOPER 3 -->
+                            <div class="flex flex-col items-center group w-40">
+                                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-[#00FFF5] mb-4 transition-all duration-300 group-hover:border-white group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(0,255,245,0.7)] group-hover:brightness-110">
+                                    <img src="public/develop.png" alt="Developer 3" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-['Poppins'] font-semibold text-white text-base">Mega Putri Telaumbanua</p>
+                                    <p class="font-['Poppins'] italic text-gray-300 text-sm mt-1">110124102</p>
+                                </div>
+                            </div>
+
+                            <!-- DEVELOPER 4 -->
+                            <div class="flex flex-col items-center group w-40">
+                                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-[#00FFF5] mb-4 transition-all duration-300 group-hover:border-white group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(0,255,245,0.7)] group-hover:brightness-110">
+                                    <img src="public/develop.png" alt="Developer 4" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-['Poppins'] font-semibold text-white text-base">Rasta Jutania Br Tarigan</p>
+                                    <p class="font-['Poppins'] italic text-gray-300 text-sm mt-1">110124110</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ROW 2: 3 DEVELOPER (DITENGAH) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 justify-items-center max-w-3xl mx-auto">
+                            <!-- DEVELOPER 5 -->
+                            <div class="flex flex-col items-center group w-40">
+                                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-[#00FFF5] mb-4 transition-all duration-300 group-hover:border-white group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(0,255,245,0.7)] group-hover:brightness-110">
+                                    <img src="public/develop.png" alt="Developer 5" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-['Poppins'] font-semibold text-white text-base">Rahima Maisarah Ritonga</p>
+                                    <p class="font-['Poppins'] italic text-gray-300 text-sm mt-1">110124135</p>
+                                </div>
+                            </div>
+
+                            <!-- DEVELOPER 6 -->
+                            <div class="flex flex-col items-center group w-40">
+                                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-[#00FFF5] mb-4 transition-all duration-300 group-hover:border-white group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(0,255,245,0.7)] group-hover:brightness-110">
+                                    <img src="public/develop.png" alt="Developer 6" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-['Poppins'] font-semibold text-white text-base">Arya Prapanca</p>
+                                    <p class="font-['Poppins'] italic text-gray-300 text-sm mt-1">110124078</p>
+                                </div>
+                            </div>
+
+                            <!-- DEVELOPER 7 -->
+                            <div class="flex flex-col items-center group w-40">
+                                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-[#00FFF5] mb-4 transition-all duration-300 group-hover:border-white group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(0,255,245,0.7)] group-hover:brightness-110">
+                                    <img src="public/develop.png" alt="Developer 7" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-['Poppins'] font-semibold text-white text-base">Rafly Nasution</p>
+                                    <p class="font-['Poppins'] italic text-gray-300 text-sm mt-1">110124130</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TEKS TAMBAHAN DI BAWAH -->
+                    <p class="text-center text-gray-300 font-['Poppins'] text-sm italic mt-6">
+                        Tim pengembang Game Math Drive 2025
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎯 TUJUAN SECTION -->
+    <div id="tujuan-content" data-page="tujuan" class="page-content hidden fixed inset-0 z-30 flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="w-[90vw] max-w-[900px] h-[53vh] relative">
+            <!-- CLOSE BUTTON -->
+            <button class="close-page absolute -top-3 -right-3 md:-top-4 md:-right-4 z-50 w-10 h-10 rounded-full bg-[#00FFF5] text-black flex items-center justify-center hover:bg-white transition-all duration-300 shadow-lg border-2 border-black hover:scale-110 hover:shadow-[0_0_20px_rgba(0,255,245,0.5)]">
+                <i class='bx bx-x text-2xl'></i>
+            </button>
+
+            <div class="bg-white border-4 border-cyan-400 rounded-2xl shadow-2xl w-full h-full overflow-hidden relative">
+                <!-- BACKGROUND GAMBAR -->
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('public/bgCard.png');"></div>
+                <!-- OVERLAY GELAP -->
+                <div class="absolute inset-0 bg-black/50"></div>
+
+                <div class="relative w-full h-full flex flex-col p-6 md:p-8 overflow-y-auto custom-scroll">
+                    <!-- JUDUL DITENGAH -->
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center font-['Poppins']">
+                        Tujuan <span class="text-[#00FFF5]">Game</span>
+                    </h2>
+
+                    <!-- TEKS PARAGRAF PERTAMA RATA TENGAH -->
+                    <p class="text-gray-300 font-['Poppins'] text-center text-base md:text-lg leading-relaxed mb-6">
+                        Game ini bertujuan untuk melatih keterampilan matematika dasar (perkalian, penjumlahan, konversi waktu, keliling)
+                        bagi siswa SD melalui mekanik permainan mengemudi yang interaktif dan menyenangkan.
+                        Dengan menyamakan "kecepatan mobil" dengan "kecepatan berpikir",
+                        anak diajak belajar dalam suasana yang tidak menekan.
+                    </p>
+
+                    <div class="mt-4"></div>
+
+                    <!-- CONTAINER GAMBAR - DITENGAH -->
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="flex flex-col sm:flex-row justify-center items-center gap-8 md:gap-12 max-w-4xl mx-auto">
+                            <!-- GAMBAR 1 -->
+                            <div class="flex flex-col items-center group w-40">
+                                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-[#00FFF5] mb-4 transition-all duration-300 group-hover:border-white group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(0,255,245,0.7)] group-hover:brightness-110">
+                                    <img src="public/logic.png" alt="Matimatic" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-['Poppins'] font-semibold text-white text-base">Matimatic</p>
+                                </div>
+                            </div>
+
+                            <!-- GAMBAR 2 -->
+                            <div class="flex flex-col items-center group w-40">
+                                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-[#00FFF5] mb-4 transition-all duration-300 group-hover:border-white group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(0,255,245,0.7)] group-hover:brightness-110">
+                                    <img src="public/koordinasi.png" alt="Koordinasi" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-['Poppins'] font-semibold text-white text-base">Koordinasi</p>
+                                </div>
+                            </div>
+
+                            <!-- GAMBAR 3 -->
+                            <div class="flex flex-col items-center group w-40">
+                                <div class="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-[#00FFF5] mb-4 transition-all duration-300 group-hover:border-white group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(0,255,245,0.7)] group-hover:brightness-110">
+                                    <img src="public/serius.png" alt="Ketelitian" class="w-full h-full object-cover">
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-['Poppins'] font-semibold text-white text-base">Ketelitian</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📞 CONTACT SECTION -->
+    <div id="contact-content" data-page="contact" class="page-content hidden fixed inset-0 z-30 flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="w-[90vw] max-w-[900px] h-[53vh] relative">
+            <!-- CLOSE BUTTON -->
+            <button class="close-page absolute -top-3 -right-3 md:-top-4 md:-right-4 z-50 w-10 h-10 rounded-full bg-[#00FFF5] text-black flex items-center justify-center hover:bg-white transition-all duration-300 shadow-lg border-2 border-black hover:scale-110 hover:shadow-[0_0_20px_rgba(0,255,245,0.5)]">
+                <i class='bx bx-x text-2xl'></i>
+            </button>
+
+            <div class="bg-white border-4 border-cyan-400 rounded-2xl shadow-2xl w-full h-full overflow-hidden relative">
+                <!-- BACKGROUND GAMBAR -->
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('public/bgCard.png');"></div>
+                <!-- OVERLAY GELAP -->
+                <div class="absolute inset-0 bg-black/50"></div>
+
+                <div class="relative w-full h-full flex flex-col md:flex-row p-0 overflow-hidden">
+                    <!-- KIRI: GOOGLE MAPS -->
+                    <div class="w-full md:w-1/2 h-48 md:h-auto relative">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127420.71314599394!2d98.5549613829845!3d3.6109701672617205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312f007b424b53%3A0xe4b00be3694d1712!2sUniversitas%20Battuta!5e0!3m2!1sid!2sid!4v1767520499403!5m2!1sid!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full h-full border-0"></iframe>
+                        <!-- OVERLAY GRADIENT DI ATAS MAPS -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+                    </div>
+
+                    <!-- KANAN: FORM KONTAK -->
+                    <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center overflow-y-auto custom-scroll" style="max-height: calc(53vh - 48px);">
+                        <form id="contactForm" class="space-y-4">
+                            <!-- INPUT EMAIL -->
+                            <div class="relative">
+                                <div class="flex items-center mb-2">
+                                    <i class='bx bx-envelope text-[#00FFF5] text-lg mr-2'></i>
+                                    <label class="text-white text-sm font-['Poppins'] font-medium">Email</label>
+                                </div>
+                                <input type="email" id="emailInput" placeholder="Masukkan email Anda" class="w-full p-3 bg-white/10 backdrop-blur-sm border-2 border-[#00FFF5]/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#00FFF5] focus:bg-white/20 transition-all duration-300 font-['Poppins']" />
+                            </div>
+
+                            <!-- INPUT NOMOR TELEPON -->
+                            <div class="relative">
+                                <div class="flex items-center mb-2">
+                                    <i class='bx bx-phone text-[#00FFF5] text-lg mr-2'></i>
+                                    <label class="text-white text-sm font-['Poppins'] font-medium">Nomor Telepon</label>
+                                </div>
+                                <input type="tel" id="phoneInput" placeholder="Masukkan nomor telepon" class="w-full p-3 bg-white/10 backdrop-blur-sm border-2 border-[#00FFF5]/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#00FFF5] focus:bg-white/20 transition-all duration-300 font-['Poppins']" />
+                            </div>
+
+                            <!-- TEXTAREA PESAN -->
+                            <div class="relative">
+                                <div class="flex items-center mb-2">
+                                    <i class='bx bx-message-detail text-[#00FFF5] text-lg mr-2'></i>
+                                    <label class="text-white text-sm font-['Poppins'] font-medium">Pesan</label>
+                                </div>
+                                <textarea id="messageInput" placeholder="Tulis pesan Anda di sini..." rows="3" class="w-full p-3 bg-white/10 backdrop-blur-sm border-2 border-[#00FFF5]/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#00FFF5] focus:bg-white/20 transition-all duration-300 font-['Poppins'] resize-none"></textarea>
+                            </div>
+
+                            <!-- TOMBOL KIRIM -->
+                            <button type="submit" class="w-full mt-4 px-6 py-3 bg-gradient-to-r from-[#00FFF5] to-[#00BFFF] text-black font-['Poppins'] font-bold rounded-xl hover:bg-[#00FFF5] transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-[0_0_25px_rgba(0,255,245,0.5)] border-2 border-transparent hover:border-[#00FFF5]">
+                                Kirim Pesan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- COPYRIGHT FOOTER - DI ATAS SEMUA (Z-INDEX TERTINGGI) -->
+    <div class="fixed z-50 pointer-events-none bottom-0 left-0 right-0 sm:bottom-5 sm:left-auto sm:right-5">
+        <div class="flex items-center justify-center gap-2 px-4 py-3 bg-white text-black sm:rounded-xl shadow-xl shadow-black/40 backdrop-blur-md max-w-full sm:max-w-max mx-auto sm:mx-0 scale-95 sm:scale-100">
+            <img src="public/logo.png" alt="Math Drive Logo" class="w-5 h-5 object-contain">
+            <p class="text-xs sm:text-sm font-semibold text-center whitespace-nowrap">
+                © 2026 <span class="font-bold">Math Drive</span>. All rights reserved.
+            </p>
+        </div>
+    </div>
+
+    <!-- JavaScript External -->
+    <script src="js/script.js"></script>
+    <script src="js/game.js"></script>
+
+</body>
+
+</html>
