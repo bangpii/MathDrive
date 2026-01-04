@@ -389,68 +389,83 @@
         </div>
     </div>
 
-    <!-- 📞 CONTACT SECTION -->
-    <div id="contact-content" data-page="contact" class="page-content hidden fixed inset-0 z-30 flex items-center justify-center p-4 backdrop-blur-md">
-        <div class="w-[90vw] max-w-[900px] h-[53vh] relative">
-            <!-- CLOSE BUTTON -->
-            <button class="close-page absolute -top-3 -right-3 md:-top-4 md:-right-4 z-50 w-10 h-10 rounded-full bg-[#00FFF5] text-black flex items-center justify-center hover:bg-white transition-all duration-300 shadow-lg border-2 border-black hover:scale-110 hover:shadow-[0_0_20px_rgba(0,255,245,0.5)]">
-                <i class='bx bx-x text-2xl'></i>
-            </button>
+ <!-- 📞 CONTACT SECTION -->
+<div id="contact-content" data-page="contact" class="page-content hidden fixed inset-0 z-30 flex items-center justify-center p-4 backdrop-blur-md">
+    <div class="w-[90vw] max-w-[900px] h-[90vh] md:h-[70vh] lg:h-[53vh] relative">
+        <!-- CLOSE BUTTON -->
+        <button class="close-page absolute -top-3 -right-3 md:-top-4 md:-right-4 z-50 w-10 h-10 rounded-full bg-[#00FFF5] text-black flex items-center justify-center hover:bg-white transition-all duration-300 shadow-lg border-2 border-black hover:scale-110 hover:shadow-[0_0_20px_rgba(0,255,245,0.5)]">
+            <i class='bx bx-x text-2xl'></i>
+        </button>
 
-            <div class="bg-white border-4 border-cyan-400 rounded-2xl shadow-2xl w-full h-full overflow-hidden relative">
-                <!-- BACKGROUND GAMBAR -->
-                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('public/bgCard.png');"></div>
-                <!-- OVERLAY GELAP -->
-                <div class="absolute inset-0 bg-black/50"></div>
+        <div class="bg-white border-4 border-cyan-400 rounded-2xl shadow-2xl w-full h-full overflow-hidden relative">
+            <!-- BACKGROUND GAMBAR -->
+            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('public/bgCard.png');"></div>
+            <!-- OVERLAY GELAP -->
+            <div class="absolute inset-0 bg-black/50"></div>
 
-                <div class="relative w-full h-full flex flex-col md:flex-row p-0 overflow-hidden">
-                    <!-- KIRI: GOOGLE MAPS -->
-                    <div class="w-full md:w-1/2 h-48 md:h-auto relative">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127420.71314599394!2d98.5549613829845!3d3.6109701672617205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312f007b424b53%3A0xe4b00be3694d1712!2sUniversitas%20Battuta!5e0!3m2!1sid!2sid!4v1767520499403!5m2!1sid!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full h-full border-0"></iframe>
-                        <!-- OVERLAY GRADIENT DI ATAS MAPS -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
-                    </div>
+            <div class="relative w-full h-full flex flex-col lg:flex-row p-0 overflow-hidden">
+                <!-- KIRI: GOOGLE MAPS -->
+                <div class="w-full lg:w-1/2 h-48 md:h-56 lg:h-auto">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127420.71314599394!2d98.5549613829845!3d3.6109701672617205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312f007b424b53%3A0xe4b00be3694d1712!2sUniversitas%20Battuta!5e0!3m2!1sid!2sid!4v1767520499403!5m2!1sid!2sid" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade" 
+                            class="w-full h-full border-0">
+                    </iframe>
+                    <!-- OVERLAY GRADIENT DI ATAS MAPS -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none lg:hidden"></div>
+                </div>
 
-                    <!-- KANAN: FORM KONTAK -->
-                    <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center overflow-y-auto custom-scroll" style="max-height: calc(53vh - 48px);">
-                        <form id="contactForm" class="space-y-4">
-                            <!-- INPUT EMAIL -->
-                            <div class="relative">
-                                <div class="flex items-center mb-2">
-                                    <i class='bx bx-envelope text-[#00FFF5] text-lg mr-2'></i>
-                                    <label class="text-white text-sm font-['Poppins'] font-medium">Email</label>
-                                </div>
-                                <input type="email" id="emailInput" placeholder="Masukkan email Anda" class="w-full p-3 bg-white/10 backdrop-blur-sm border-2 border-[#00FFF5]/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#00FFF5] focus:bg-white/20 transition-all duration-300 font-['Poppins']" />
+                <!-- KANAN: FORM KONTAK -->
+                <div class="w-full lg:w-1/2 p-4 md:p-6 lg:p-8 flex flex-col justify-center">
+                    <form id="contactForm" class="space-y-3 md:space-y-4">
+                        <!-- INPUT EMAIL -->
+                        <div class="relative">
+                            <div class="flex items-center mb-1 md:mb-2">
+                                <i class='bx bx-envelope text-[#00FFF5] text-lg mr-2'></i>
+                                <label class="text-white text-sm md:text-base font-['Poppins'] font-medium">Email</label>
                             </div>
+                            <input type="email" 
+                                   id="emailInput" 
+                                   placeholder="Masukkan email Anda" 
+                                   class="w-full p-2 md:p-3 text-sm md:text-base bg-white/10 backdrop-blur-sm border-2 border-[#00FFF5]/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#00FFF5] focus:bg-white/20 transition-all duration-300 font-['Poppins']" />
+                        </div>
 
-                            <!-- INPUT NOMOR TELEPON -->
-                            <div class="relative">
-                                <div class="flex items-center mb-2">
-                                    <i class='bx bx-phone text-[#00FFF5] text-lg mr-2'></i>
-                                    <label class="text-white text-sm font-['Poppins'] font-medium">Nomor Telepon</label>
-                                </div>
-                                <input type="tel" id="phoneInput" placeholder="Masukkan nomor telepon" class="w-full p-3 bg-white/10 backdrop-blur-sm border-2 border-[#00FFF5]/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#00FFF5] focus:bg-white/20 transition-all duration-300 font-['Poppins']" />
+                        <!-- INPUT NOMOR TELEPON -->
+                        <div class="relative">
+                            <div class="flex items-center mb-1 md:mb-2">
+                                <i class='bx bx-phone text-[#00FFF5] text-lg mr-2'></i>
+                                <label class="text-white text-sm md:text-base font-['Poppins'] font-medium">Nomor Telepon</label>
                             </div>
+                            <input type="tel" 
+                                   id="phoneInput" 
+                                   placeholder="Masukkan nomor telepon" 
+                                   class="w-full p-2 md:p-3 text-sm md:text-base bg-white/10 backdrop-blur-sm border-2 border-[#00FFF5]/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#00FFF5] focus:bg-white/20 transition-all duration-300 font-['Poppins']" />
+                        </div>
 
-                            <!-- TEXTAREA PESAN -->
-                            <div class="relative">
-                                <div class="flex items-center mb-2">
-                                    <i class='bx bx-message-detail text-[#00FFF5] text-lg mr-2'></i>
-                                    <label class="text-white text-sm font-['Poppins'] font-medium">Pesan</label>
-                                </div>
-                                <textarea id="messageInput" placeholder="Tulis pesan Anda di sini..." rows="3" class="w-full p-3 bg-white/10 backdrop-blur-sm border-2 border-[#00FFF5]/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#00FFF5] focus:bg-white/20 transition-all duration-300 font-['Poppins'] resize-none"></textarea>
+                        <!-- TEXTAREA PESAN -->
+                        <div class="relative">
+                            <div class="flex items-center mb-1 md:mb-2">
+                                <i class='bx bx-message-detail text-[#00FFF5] text-lg mr-2'></i>
+                                <label class="text-white text-sm md:text-base font-['Poppins'] font-medium">Pesan</label>
                             </div>
+                            <textarea id="messageInput" 
+                                      placeholder="Tulis pesan Anda di sini..." 
+                                      rows="2" 
+                                      class="w-full p-2 md:p-3 text-sm md:text-base bg-white/10 backdrop-blur-sm border-2 border-[#00FFF5]/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-[#00FFF5] focus:bg-white/20 transition-all duration-300 font-['Poppins'] resize-none"></textarea>
+                        </div>
 
-                            <!-- TOMBOL KIRIM -->
-                            <button type="submit" class="w-full mt-4 px-6 py-3 bg-gradient-to-r from-[#00FFF5] to-[#00BFFF] text-black font-['Poppins'] font-bold rounded-xl hover:bg-[#00FFF5] transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-[0_0_25px_rgba(0,255,245,0.5)] border-2 border-transparent hover:border-[#00FFF5]">
-                                Kirim Pesan
-                            </button>
-                        </form>
-                    </div>
+                        <!-- TOMBOL KIRIM -->
+                        <button type="submit" 
+                                class="w-full mt-2 md:mt-4 px-4 md:px-6 py-2 md:py-3 text-sm md:text-base bg-gradient-to-r from-[#00FFF5] to-[#00BFFF] text-black font-['Poppins'] font-bold rounded-xl hover:bg-[#00FFF5] transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-[0_0_25px_rgba(0,255,245,0.5)] border-2 border-transparent hover:border-[#00FFF5]">
+                            Kirim Pesan
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <!-- COPYRIGHT FOOTER - DI ATAS SEMUA (Z-INDEX TERTINGGI) -->
     <div class="fixed z-50 pointer-events-none bottom-0 left-0 right-0 sm:bottom-5 sm:left-auto sm:right-5">
