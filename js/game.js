@@ -168,10 +168,7 @@ class Game {
         this.imgWidth = this.calculateImgWidth();
         this.leftLimit = 0;
 
-        // POSISI CHECKPOINT - DISESUAIKAN DENGAN UKURAN LAYAR
-        // Array ini menentukan di gambar keberapa checkpoint muncul
-        // [3, 5, 7, 9, 11] artinya checkpoint di gambar ke-4, ke-6, ke-8, ke-10, ke-12
-        // (indeks array dimulai dari 0, tapi gambar dimulai dari 1)
+        // POSISI CHECKPOINT
         this.posIndexes = [3, 5, 7, 9, 11];
         this.currentPos = 0;
         this.score = 100;
@@ -180,10 +177,10 @@ class Game {
         this.answeredPositions = [false, false, false, false, false];
         this.wrongAnswers = 0;
 
-        // Variabel untuk mobil
+        // VARIABEL UNTUK BATAS MOBIL
         this.carPosition = 0;
-        this.carSpeedFactor = this.calculateCarSpeedFactor();
-        this.maxCarPosition = this.calculateMaxCarPosition();
+        this.maxCarPosition = window.innerWidth * 0.4; // Batas 40% dari lebar layar (lebih aman)
+        this.minCarPosition = 10; // Batas minimal di kiri
 
         // Variabel untuk suara mobil
         this.isCarSoundPlaying = false;
@@ -261,37 +258,19 @@ class Game {
         return imgWidth;
     }
     
-    // Hitung faktor kecepatan mobil
-    calculateCarSpeedFactor() {
-        const viewportWidth = window.innerWidth;
-        
-        if (viewportWidth < 768) {
-            return 0.02; // Lebih lambat di mobile
-        } else if (viewportWidth < 1024) {
-            return 0.025;
-        } else {
-            return 0.03; // Default untuk desktop
-        }
-    }
-    
-    // Hitung posisi maksimal mobil
-    calculateMaxCarPosition() {
-        const viewportWidth = window.innerWidth;
-        
-        // Mobil tidak boleh melewati 70% dari lebar layar
-        return viewportWidth * 0.7;
-    }
-    
     // Handle resize event
     handleResize() {
         // Update semua nilai yang bergantung pada viewport
         this.setupResponsiveDimensions();
         this.imgWidth = this.calculateImgWidth();
-        this.carSpeedFactor = this.calculateCarSpeedFactor();
-        this.maxCarPosition = this.calculateMaxCarPosition();
+        // Update batas maksimal posisi mobil (40% dari lebar layar)
+        this.maxCarPosition = window.innerWidth * 0.4;
         
-        // Update posisi car berdasarkan new dimensions
-        this.updateCarPosition();
+        // Update posisi car jika melebihi batas baru
+        if (this.carPosition > this.maxCarPosition) {
+            this.carPosition = this.maxCarPosition;
+            this.updateCarPosition();
+        }
     }
 
     init() {
@@ -344,20 +323,36 @@ class Game {
         this.isCarSoundPlaying = false;
     }
 
+    // UPDATE: Fungsi untuk update posisi mobil dengan batasan yang fix
     updateCarPosition() {
-        // Hitung progress perjalanan (0 sampai 1)
-        const totalDistance = Math.abs(this.imgWidth * 12); // Total jarak ke finish
+        // HITUNG PROGRESS YANG TEPAT
+        // Total jarak yang ditempuh = posisi background
         const currentDistance = Math.abs(this.position);
-        const progress = currentDistance / totalDistance;
         
-        // Update posisi mobil berdasarkan progress
+        // Jika mobil sudah jauh, kita perlambat pergerakan mobil ke kanan
+        let progress;
+        
+        if (currentDistance > 0) {
+            // Gunakan rumus yang lebih lambat untuk progress
+            progress = Math.min(currentDistance / (this.imgWidth * 15), 0.6); // Maksimal 60% dari maxCarPosition
+        } else {
+            progress = 0;
+        }
+        
+        // Update posisi mobil
         this.carPosition = progress * this.maxCarPosition;
 
-        // Pastikan tidak melewati batas maksimal
+        // PASTIKAN TIDAK MELEBIHI BATAS - FIX HARDCAP
         if (this.carPosition > this.maxCarPosition) {
             this.carPosition = this.maxCarPosition;
         }
+        
+        // Pastikan tidak kurang dari batas minimal
+        if (this.carPosition < this.minCarPosition) {
+            this.carPosition = this.minCarPosition;
+        }
 
+        // Apply transform
         this.car.style.transform = `translateX(${this.carPosition}px)`;
     }
 
@@ -551,6 +546,7 @@ class Game {
     }
 
     setupEventListeners() {
+        // LOGIKA ORIGINAL: A untuk mundur, D untuk maju - TIDAK DIUBAH
         document.addEventListener('keydown', e => {
             if (this.finished || this.quizActive) return;
 
