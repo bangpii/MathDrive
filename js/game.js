@@ -34,50 +34,61 @@ function loadGame() {
 
     // HTML game
     gameContainer.innerHTML = `
-        <!-- BACKGROUND CONTAINER -->
-        <div id="bg-container" class="absolute top-0 left-0 w-full h-full overflow-hidden">
-            <!-- BACKGROUND STRIP -->
-            <div id="bg-strip" class="absolute top-0 left-0 h-full flex transition-transform duration-100 ease-linear">
-                <!-- Background images akan diisi oleh JavaScript -->
-            </div>
+        <!-- BACKGROUND -->
+        <div id="bg-strip" class="absolute top-0 left-0 h-full flex">
+            <img src="public/1.png" class="h-full w-auto">
+            <img src="public/2.png" class="h-full w-auto">
+            <img src="public/3.png" class="h-full w-auto">
+            <img src="public/pos1.png" class="h-full w-auto">
+            <img src="public/4.png" class="h-full w-auto">
+            <img src="public/pos2.png" class="h-full w-auto">
+            <img src="public/5.png" class="h-full w-auto">
+            <img src="public/pos3.png" class="h-full w-auto">
+            <img src="public/6.png" class="h-full w-auto">
+            <img src="public/pos4.png" class="h-full w-auto">
+            <img src="public/7.png" class="h-full w-auto">
+            <img src="public/pos5.png" class="h-full w-auto">
+            <img src="public/8.png" class="h-full w-auto">
+            <img src="public/akhir.png" class="h-full w-auto">
         </div>
 
         <!-- MOBIL -->
-        <div id="car" class="absolute -bottom-2 left-[5%] z-10 transition-transform duration-100">
-            <img src="public/mobil.png" class="w-auto h-[80px] sm:h-[100px] md:h-[120px] lg:h-[150px] xl:h-[180px] object-contain">
+        <div id="car" class="absolute -bottom-2 left-10 z-10 transition-transform duration-100">
+            <img src="public/mobil.png" class="w-auto h-[120px] md:h-[150px] lg:h-[180px] object-contain">
         </div>
 
         <!-- QUESTION BOX -->
         <div id="quizBox" class="hidden absolute inset-0 flex items-center justify-center z-20">
-            <div class="p-4 sm:p-6 rounded-xl text-center text-black w-[90%] max-w-md mx-4" style="
-                background: linear-gradient(90deg, #00FFF5, #00BFFF);
-                background-color: rgba(0, 255, 245, 0.15);
-                box-shadow: 0 6px 20px rgba(0, 255, 245, 0.2);
-            ">
-                <h2 id="question" class="text-base sm:text-lg font-semibold mb-3 sm:mb-4"></h2>
+            <div class="p-6 rounded-xl text-center text-black w-[90%] max-w-md mx-4" style="
+            background: linear-gradient(90deg, #00FFF5, #00BFFF);
+            background-color: rgba(0, 255, 245, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 245, 0.2);
+        ">
+                <h2 id="question" class="text-lg font-semibold mb-4"></h2>
                 <div id="answers" class="space-y-2"></div>
             </div>
         </div>
 
         <!-- HEALTH BAR (SCORE) -->
-        <div class="absolute top-3 right-3 sm:top-4 sm:right-4 bg-black/70 text-white px-3 py-2 rounded-lg font-bold z-10">
+        <div class="absolute top-4 right-4 bg-black/70 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg font-bold z-10">
             <div class="flex items-center gap-2">
-                <div class="w-16 sm:w-20 md:w-24 lg:w-28 xl:w-32 h-2 sm:h-3 md:h-4 bg-gray-700 rounded-full overflow-hidden">
+                <div class="w-24 md:w-32 h-3 md:h-4 bg-gray-700 rounded-full overflow-hidden">
                     <div id="healthBar" class="h-full bg-red-500 rounded-full transition-all duration-300" style="width: 100%"></div>
                 </div>
-                <span id="scoreValue" class="text-xs sm:text-sm md:text-base">100</span>
+                <span id="scoreValue" class="text-sm md:text-base">100</span>
             </div>
         </div>
 
         <!-- CONTROLS INFO -->
-        <div class="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 bg-black/70 text-white px-3 py-1 rounded-lg font-medium z-10">
-            <div class="flex items-center gap-2 sm:gap-3">
+          <div class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-lg font-medium z-10 text-sm">
+            <div class="flex items-center gap-3">
                 <div class="flex items-center gap-1">
-                    <span class="bg-gray-800 px-2 py-1 rounded text-xs">A</span>
+                    <span class="bg-gray-800 px-2 py-1 rounded">A</span>
                     <span class="text-xs">← Mundur</span>
                 </div>
                 <div class="flex items-center gap-1">
-                    <span class="bg-gray-800 px-2 py-1 rounded text-xs">D</span>
+                    <span class="bg-gray-800 px-2 py-1 rounded">D</span>
                     <span class="text-xs">→ Maju</span>
                 </div>
             </div>
@@ -85,13 +96,13 @@ function loadGame() {
 
         <!-- GAME OVER OVERLAY -->
         <div id="gameOverOverlay" class="hidden absolute inset-0 bg-black/80 flex items-center justify-center z-30">
-            <div class="text-center p-4 sm:p-6 md:p-8 rounded-2xl w-[90%] max-w-md mx-4" style="
+            <div class="text-center p-6 md:p-8 rounded-2xl w-[90%] max-w-md mx-4" style="
                 background: linear-gradient(135deg, #FF416C, #FF4B2B);
                 box-shadow: 0 20px 40px rgba(255, 65, 108, 0.4);
             ">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">GAME OVER</h2>
-                <p class="text-base sm:text-lg md:text-xl text-white/90 mb-6">Skor Akhir: <span id="finalScore" class="font-bold">0</span></p>
-                <button onclick="gameInstance.restartGame()" class="bg-white text-red-600 font-bold px-4 py-2 sm:px-6 sm:py-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-sm sm:text-base md:text-lg">
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">GAME OVER</h2>
+                <p class="text-lg md:text-xl text-white/90 mb-6">Skor Akhir: <span id="finalScore" class="font-bold">0</span></p>
+                <button onclick="gameInstance.restartGame()" class="bg-white text-red-600 font-bold px-6 py-2 md:px-8 md:py-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-base md:text-lg">
                     MAIN LAGI
                 </button>
             </div>
@@ -99,18 +110,18 @@ function loadGame() {
 
         <!-- WINNER OVERLAY -->
         <div id="winnerOverlay" class="hidden absolute inset-0 bg-black/80 flex items-center justify-center z-30">
-            <div class="text-center p-4 sm:p-6 md:p-8 rounded-2xl w-[90%] max-w-md mx-4 bg-black border-4" style="
+            <div class="text-center p-6 md:p-8 rounded-2xl w-[90%] max-w-md mx-4 bg-black border-4" style="
                 border-color: #00FFF5;
                 box-shadow: 0 0 30px rgba(0, 255, 245, 0.5), inset 0 0 20px rgba(0, 255, 245, 0.1);
             ">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">WINNER!</h2>
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">WINNER!</h2>
                 <div class="text-white/90 mb-6 space-y-3">
-                    <p class="text-base sm:text-lg md:text-xl">Skor Akhir: <span id="winnerScore" class="font-bold text-lg sm:text-xl md:text-2xl" style="color: #00FFF5;">100</span></p>
-                    <div id="winnerMessage" class="text-sm sm:text-base md:text-lg">
+                    <p class="text-lg md:text-xl">Skor Akhir: <span id="winnerScore" class="font-bold text-xl md:text-2xl" style="color: #00FFF5;">100</span></p>
+                    <div id="winnerMessage" class="text-base md:text-lg">
                         <!-- Message akan diisi oleh JavaScript -->
                     </div>
                 </div>
-                <button onclick="gameInstance.restartGame()" class="font-bold px-4 py-2 sm:px-6 sm:py-3 rounded-lg transition-colors duration-200 text-sm sm:text-base md:text-lg" style="
+                <button onclick="gameInstance.restartGame()" class="font-bold px-6 py-2 md:px-8 md:py-3 rounded-lg transition-colors duration-200 text-base md:text-lg" style="
                     background: #00FFF5;
                     color: black;
                 ">
@@ -132,7 +143,6 @@ function loadGame() {
 // Game Class
 class Game {
     constructor() {
-        this.bgContainer = document.getElementById('bg-container');
         this.strip = document.getElementById('bg-strip');
         this.quizBox = document.getElementById('quizBox');
         this.questionEl = document.getElementById('question');
@@ -147,18 +157,22 @@ class Game {
         this.car = document.getElementById('car');
         this.carSound = document.getElementById('carSound');
 
-        // Ukuran dinamis berdasarkan viewport
-        this.viewportWidth = window.innerWidth;
-        this.calculateDimensions();
-        
-        // Setup background images
-        this.setupBackground();
+        // Setup responsive dimensions
+        this.setupResponsiveDimensions();
         
         this.position = 0;
         this.speed = 0;
         this.maxSpeed = 6;
         this.friction = 0.12;
 
+        this.imgWidth = this.calculateImgWidth();
+        this.leftLimit = 0;
+
+        // POSISI CHECKPOINT - DISESUAIKAN DENGAN UKURAN LAYAR
+        // Array ini menentukan di gambar keberapa checkpoint muncul
+        // [3, 5, 7, 9, 11] artinya checkpoint di gambar ke-4, ke-6, ke-8, ke-10, ke-12
+        // (indeks array dimulai dari 0, tapi gambar dimulai dari 1)
+        this.posIndexes = [3, 5, 7, 9, 11];
         this.currentPos = 0;
         this.score = 100;
         this.finished = false;
@@ -168,7 +182,7 @@ class Game {
 
         // Variabel untuk mobil
         this.carPosition = 0;
-        this.carSpeedFactor = 0.03;
+        this.carSpeedFactor = this.calculateCarSpeedFactor();
         this.maxCarPosition = this.calculateMaxCarPosition();
 
         // Variabel untuk suara mobil
@@ -203,113 +217,99 @@ class Game {
             }
         ];
 
-        // Index posisi checkpoint (RELATIF terhadap jumlah gambar)
-        this.posIndexes = [3, 5, 7, 9, 11]; // Tetap sama, tapi dihitung berdasarkan imgWidth dinamis
-        this.totalImages = 14; // Total gambar background
-        this.finishIndex = 12; // Index gambar finish
-
         this.init();
         
-        // Event listener untuk resize
+        // Add resize listener
         window.addEventListener('resize', () => this.handleResize());
     }
-
-    calculateDimensions() {
-        // Hitung lebar gambar berdasarkan viewport
-        if (this.viewportWidth < 640) { // Mobile
-            this.imgWidth = this.viewportWidth * 1.5; // Lebar lebih besar dari viewport
-            this.leftLimit = 0;
-        } else if (this.viewportWidth < 768) { // Tablet kecil
-            this.imgWidth = this.viewportWidth * 1.2;
-            this.leftLimit = 0;
-        } else if (this.viewportWidth < 1024) { // Tablet/Laptop kecil
-            this.imgWidth = this.viewportWidth * 0.9;
-            this.leftLimit = 0;
-        } else if (this.viewportWidth < 1280) { // Laptop standar
-            this.imgWidth = 1024;
-            this.leftLimit = 0;
-        } else if (this.viewportWidth < 1536) { // Desktop
-            this.imgWidth = 1152;
-            this.leftLimit = 0;
+    
+    // Fungsi untuk setup dimensi responsif
+    setupResponsiveDimensions() {
+        const viewportWidth = window.innerWidth;
+        
+        // Tentukan base imgWidth berdasarkan viewport
+        if (viewportWidth < 768) { // Mobile & Tablet kecil
+            this.baseImgWidth = 600;
+        } else if (viewportWidth < 1024) { // Tablet
+            this.baseImgWidth = 800;
+        } else if (viewportWidth < 1280) { // Laptop kecil
+            this.baseImgWidth = 900;
+        } else if (viewportWidth < 1536) { // Laptop standar
+            this.baseImgWidth = 1000;
         } else { // Monitor besar
-            this.imgWidth = 1280;
-            this.leftLimit = 0;
+            this.baseImgWidth = 1100;
+        }
+    }
+    
+    // Hitung lebar gambar berdasarkan viewport
+    calculateImgWidth() {
+        const viewportWidth = window.innerWidth;
+        
+        // Pastikan gambar proporsional dengan viewport
+        let imgWidth = this.baseImgWidth;
+        
+        // Adjust untuk layar sangat kecil
+        if (viewportWidth < 640) {
+            imgWidth = viewportWidth * 1.5; // Lebih lebar untuk scrolling yang smooth
         }
         
-        // Pastikan imgWidth minimal 800px untuk gameplay yang baik
-        this.imgWidth = Math.max(this.imgWidth, 800);
+        // Adjust untuk layar sangat besar
+        if (viewportWidth > 1920) {
+            imgWidth = Math.min(imgWidth, 1200); // Batasi maksimal
+        }
+        
+        return imgWidth;
     }
-
-    calculateMaxCarPosition() {
-        // Hitung max position mobil berdasarkan viewport
-        if (this.viewportWidth < 640) {
-            return this.viewportWidth * 0.6;
-        } else if (this.viewportWidth < 768) {
-            return this.viewportWidth * 0.65;
-        } else if (this.viewportWidth < 1024) {
-            return this.viewportWidth * 0.7;
+    
+    // Hitung faktor kecepatan mobil
+    calculateCarSpeedFactor() {
+        const viewportWidth = window.innerWidth;
+        
+        if (viewportWidth < 768) {
+            return 0.02; // Lebih lambat di mobile
+        } else if (viewportWidth < 1024) {
+            return 0.025;
         } else {
-            return this.viewportWidth * 0.75;
+            return 0.03; // Default untuk desktop
         }
     }
-
-    setupBackground() {
-        // Clear existing images
-        this.strip.innerHTML = '';
+    
+    // Hitung posisi maksimal mobil
+    calculateMaxCarPosition() {
+        const viewportWidth = window.innerWidth;
         
-        // Daftar gambar background
-        const bgImages = [
-            'public/1.png', 'public/2.png', 'public/3.png',
-            'public/pos1.png', 'public/4.png', 'public/pos2.png',
-            'public/5.png', 'public/pos3.png', 'public/6.png',
-            'public/pos4.png', 'public/7.png', 'public/pos5.png',
-            'public/8.png', 'public/akhir.png'
-        ];
-        
-        // Tambahkan semua gambar ke strip
-        bgImages.forEach(src => {
-            const img = document.createElement('img');
-            img.src = src;
-            img.className = 'h-full w-auto object-cover';
-            img.style.width = `${this.imgWidth}px`;
-            img.style.height = '100%';
-            img.style.flexShrink = '0';
-            this.strip.appendChild(img);
-        });
-        
-        // Set lebar total strip
-        this.strip.style.width = `${this.imgWidth * bgImages.length}px`;
+        // Mobil tidak boleh melewati 70% dari lebar layar
+        return viewportWidth * 0.7;
     }
-
+    
+    // Handle resize event
     handleResize() {
-        // Update viewport width
-        this.viewportWidth = window.innerWidth;
-        
-        // Recalculate dimensions
-        this.calculateDimensions();
+        // Update semua nilai yang bergantung pada viewport
+        this.setupResponsiveDimensions();
+        this.imgWidth = this.calculateImgWidth();
+        this.carSpeedFactor = this.calculateCarSpeedFactor();
         this.maxCarPosition = this.calculateMaxCarPosition();
         
-        // Update background
-        this.setupBackground();
-        
-        // Reset position jika game sedang berjalan
-        if (!this.finished && !this.quizActive) {
-            // Recalculate current position relative to new dimensions
-            const oldPosition = this.position;
-            const scaleFactor = this.imgWidth / 900; // Faktor skala dari ukuran default 900
-            this.position = oldPosition * scaleFactor;
-            
-            // Update strip position
-            this.strip.style.transform = `translateX(${this.position}px)`;
-            
-            // Update car position
-            this.updateCarPosition();
-        }
+        // Update posisi car berdasarkan new dimensions
+        this.updateCarPosition();
     }
 
     init() {
+        // Set initial strip width based on calculated imgWidth
+        this.updateStripDimensions();
         this.update();
         this.setupEventListeners();
+    }
+    
+    // Update dimensi strip background
+    updateStripDimensions() {
+        const images = this.strip.querySelectorAll('img');
+        images.forEach(img => {
+            img.style.width = `${this.imgWidth}px`;
+        });
+        
+        // Update total width of strip
+        this.strip.style.width = `${this.imgWidth * images.length}px`;
     }
 
     // Fungsi untuk memutar suara mobil
@@ -345,16 +345,19 @@ class Game {
     }
 
     updateCarPosition() {
-        // Hitung posisi mobil berdasarkan progress
-        const progress = Math.abs(this.position) / (Math.abs(this.imgWidth * this.finishIndex));
+        // Hitung progress perjalanan (0 sampai 1)
+        const totalDistance = Math.abs(this.imgWidth * 12); // Total jarak ke finish
+        const currentDistance = Math.abs(this.position);
+        const progress = currentDistance / totalDistance;
+        
+        // Update posisi mobil berdasarkan progress
         this.carPosition = progress * this.maxCarPosition;
 
-        // Batasi posisi mobil
+        // Pastikan tidak melewati batas maksimal
         if (this.carPosition > this.maxCarPosition) {
             this.carPosition = this.maxCarPosition;
         }
 
-        // Update transform mobil dengan smooth transition
         this.car.style.transform = `translateX(${this.carPosition}px)`;
     }
 
@@ -390,7 +393,7 @@ class Game {
         data.options.forEach(val => {
             const btn = document.createElement('button');
             btn.textContent = val;
-            btn.className = 'w-full bg-white/80 hover:bg-white px-3 py-2 sm:px-4 sm:py-2 rounded font-medium transition-all duration-200 flex items-center justify-center relative text-sm md:text-base';
+            btn.className = 'w-full bg-white/80 hover:bg-white px-4 py-2 rounded font-medium transition-all duration-200 flex items-center justify-center relative text-sm md:text-base';
             btn.dataset.value = val;
 
             btn.onclick = () => this.handleAnswer(val, data.correct);
@@ -432,10 +435,8 @@ class Game {
                 }
             }
 
-            // Beri dorongan mundur setelah menjawab
             this.speed = -3;
 
-            // Reset button styles
             buttons.forEach(btn => {
                 btn.style.background = '';
                 btn.disabled = false;
@@ -504,20 +505,15 @@ class Game {
             return;
         }
 
-        // Update position dengan speed
         this.position += this.speed;
-        
-        // Apply friction
         this.speed *= (1 - this.friction);
         if (Math.abs(this.speed) < 0.05) this.speed = 0;
 
-        // Batasi agar tidak keluar dari start
         if (this.position > this.leftLimit) {
             this.position = this.leftLimit;
             this.speed = 0;
         }
 
-        // Cek jika mencapai checkpoint
         if (this.currentPos < this.posIndexes.length) {
             const stopPoint = -this.imgWidth * this.posIndexes[this.currentPos];
 
@@ -527,14 +523,12 @@ class Game {
                 this.showQuiz();
             }
 
-            // Jika sudah melewati checkpoint yang sudah dijawab
             if (this.answeredPositions[this.currentPos] && this.position < stopPoint) {
                 this.currentPos++;
             }
         }
 
-        // Cek jika mencapai finish line
-        const finishPoint = -this.imgWidth * this.finishIndex;
+        const finishPoint = -this.imgWidth * 12;
         if (this.position <= finishPoint) {
             this.position = finishPoint;
             this.speed = 0;
@@ -551,16 +545,12 @@ class Game {
             }
         }
 
-        // Update visual position
         this.strip.style.transform = `translateX(${this.position}px)`;
         this.updateCarPosition();
-        
-        // Continue game loop
         requestAnimationFrame(() => this.update());
     }
 
     setupEventListeners() {
-        // Keyboard controls
         document.addEventListener('keydown', e => {
             if (this.finished || this.quizActive) return;
 
@@ -625,7 +615,7 @@ function showPage(pageId) {
     setActivePage(pageId);
 }
 
-// Update function setActivePage
+// Update function setActivePage di script.js
 function setActivePage(page) {
     document.querySelectorAll('.nav-link, .mobile-toggle-item').forEach(link => {
         link.classList.remove('active');
@@ -764,7 +754,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Setup event listeners untuk tombol start game
 document.addEventListener('DOMContentLoaded', function() {
-    // Setup start game buttons
+    // Setup start game buttons (ditambahkan untuk memastikan)
     const startGameText = document.getElementById('start-game-text');
     const startGameTextMobile = document.getElementById('start-game-text-mobile');
 
